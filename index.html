@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق المشي مع الكلاب - Dog Walking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function sendOTP() {
+            const phone = document.getElementById('phoneInput').value;
+            if(!phone || phone.length < 10) {
+                alert("يرجى إدخال رقم هاتف صحيح!");
+                return;
+            }
+            alert("تم إرسال رمز التحقق إلى هاتفك بنجاح!");
+            document.getElementById('otp-section').classList.remove('hidden');
+        }
+
+        function verifyOTP() {
+            const code = document.getElementById('otpInput').value;
+            if(!code) {
+                alert("يرجى إدخال رمز التحقق!");
+                return;
+            }
+            alert("تم تسجيل الدخول بنجاح!");
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('booking-section').classList.remove('hidden');
+        }
+
+        function submitBooking() {
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            const hours = document.getElementById('hoursCount').value;
+            const totalPrice = hours * 500;
+
+            if(!name || !phone) {
+                alert("يرجى إكمال بيانات الحجز!");
+                return;
+            }
+
+            alert("تم إرسال طلبك بنجاح! الإجمالي: " + totalPrice + " جنيه. يرجى التحويل على فودافون كاش أو إنستا باي: 01030145357");
+            location.reload();
+        }
+
+        function loadAdminDashboard() {
+            const passcode = prompt("أدخل كلمة سر لوحة التحكم:");
+            if (passcode !== "1234") {
+                alert("كلمة السر غير صحيحة!");
+                return;
+            }
+            document.getElementById('admin-panel').classList.remove('hidden');
+            
+            const list = document.getElementById('adminOrdersList');
+            list.innerHTML = `
+                <div class="bg-white p-4 rounded shadow mb-2 flex justify-between items-center text-black">
+                    <div>
+                        <p><b>العميل:</b> أحمد محمد (+201157301978)</p>
+                        <p><b>المدة:</b> 2 ساعة - <b>الإجمالي:</b> 1000 EGP</p>
+                        <p><b>الحالة:</b> <span class="text-blue-600">قيد الانتظار</span></p>
+                    </div>
+                    <div>
+                        <button onclick="alert('تم قبول الطلب')" class="bg-green-500 px-3 py-1 text-white rounded ml-2">قبول</button>
+                        <button onclick="alert('تم رفض الطلب')" class="bg-red-500 px-3 py-1 text-white rounded">رفض</button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</head>
+<body class="bg-gray-900 font-sans text-right text-white" dir="rtl">
+
+    <div class="container mx-auto p-6 max-w-xl">
+        <h1 class="text-3xl font-bold text-center text-indigo-400 mb-6">تطبيق المشي مع الكلاب 🐕</h1>
+        
+        <div id="auth-modal" class="bg-gray-800 p-6 rounded-lg shadow-md mb-6 border border-gray-700">
+            <h2 class="text-xl font-semibold mb-4 text-white">تسجيل الدخول برقم الهاتف (OTP)</h2>
+            <input type="text" id="phoneInput" value="+20" class="w-full p-3 bg-gray-700 border border-gray-600 rounded mb-3 text-white text-lg">
+            
+            <button onclick="sendOTP()" class="w-full bg-indigo-600 text-white p-3 rounded hover:bg-indigo-700 font-bold text-lg cursor-pointer">إرسال رمز التحقق</button>
+            
+            <div id="otp-section" class="hidden mt-4">
+                <input type="text" id="otpInput" placeholder="أدخل رمز التحقق" class="w-full p-3 bg-gray-700 border border-gray-600 rounded mb-3 text-white text-lg">
+                <button onclick="verifyOTP()" class="w-full bg-green-600 text-white p-3 rounded hover:bg-green-700 font-bold text-lg cursor-pointer">تأكيد الرمز والدخول</button>
+            </div>
+        </div>
+
+        <div id="booking-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-md mb-6 border border-gray-700">
+            <h2 class="text-xl font-semibold mb-4 text-white">حجز موعد مشي جديد (500 EGP / ساعة)</h2>
+            <input type="text" id="clientName" placeholder="اسمك الكريم" class="w-full p-3 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
+            <input type="text" id="clientPhone" placeholder="رقم الهاتف" class="w-full p-3 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
+            <label class="block mb-2 text-white">عدد الساعات المطلوبة:</label>
+            <input type="number" id="hoursCount" value="1" min="1" class="w-full p-3 bg-gray-700 border border-gray-600 rounded mb-4 text-white">
+            
+            <div class="bg-yellow-900 bg-opacity-40 p-3 rounded mb-4 border border-yellow-600">
+                <p class="text-sm font-bold text-yellow-300">طرق الدفع المعتمدة:</p>
+                <p class="text-sm text-yellow-200">تحويل فودافون كاش أو إنستا باي على الرقم: <b>01030145357</b></p>
+            </div>
+
+            <button onclick="submitBooking()" class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 font-bold text-lg cursor-pointer">تأكيد وإرسال الحجز</button>
+        </div>
+
+        <div class="text-center mt-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <button onclick="loadAdminDashboard()" class="w-full text-indigo-400 font-bold text-lg cursor-pointer">⚙️ تسجيل دخول لوحة تحكم الآدمن</button>
+        </div>
+
+        <div id="admin-panel" class="hidden mt-8 bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-indigo-400">لوحة تحكم الآدمن (إدارة الطلبات)</h2>
+            <div id="adminOrdersList"></div>
+        </div>
+    </div>
+
+</body>
+</html>
