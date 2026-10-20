@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق تمشية الكلاب - Dog Walking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800" x-data="appData()">
+
+    <!-- Header / Navbar -->
+    <header class="bg-emerald-600 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-white text-emerald-600 p-2 rounded-full shadow">
+                    <i class="fa-solid fa-dog text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">دوج واكر مصر</h1>
+                    <p class="text-xs text-emerald-100">تمشية الكلاب بأمان واحترافية</p>
+                </div>
+            </div>
+            <!-- Admin Toggle Button -->
+            <button @click="currentView = 'admin'" class="bg-emerald-700 hover:bg-emerald-800 text-xs px-3 py-1.5 rounded-lg border border-emerald-500 transition">
+                <i class="fa-solid fa-user-shield ml-1"></i> لوحة تحكم الأدمن
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 py-6 max-w-md">
+
+        <!-- 1. LOGIN / ROLE SELECTION VIEW -->
+        <template x-if="currentView === 'login'">
+            <div class="bg-white rounded-2xl shadow-xl p-6 text-center space-y-6">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                    <i class="fa-solid fa-paw"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">أهلاً بك في دوج واكر</h2>
+                    <p class="text-sm text-gray-500 mt-1">منصتك الآمنة لتمشية الكلاب في مصر</p>
+                </div>
+
+                <div class="space-y-4 text-right">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">رقم الموبايل</label>
+                        <div class="flex items-center border rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500">
+                            <span class="bg-gray-100 px-3 py-3 text-sm text-gray-600 border-l">+20</span>
+                            <input type="tel5" x-model="phone" placeholder="01000000000" class="w-full px-3 py-3 outline-none text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button @click="role = 'owner'; currentView = 'owner_dashboard'" class="bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl font-medium text-sm shadow transition flex flex-col items-center justify-center space-y-1">
+                        <i class="fa-solid fa-house-chimney text-lg"></i>
+                        <span>أنا صاحب كلب</span>
+                    </button>
+                    <button @click="role = 'walker'; currentView = 'walker_dashboard'" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium text-sm shadow transition flex flex-col items-center justify-center space-y-1">
+                        <i class="fa-solid fa-person-walking text-lg"></i>
+                        <span>أنا مشّاي كلاب</span>
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- 2. OWNER DASHBOARD (طلب تمشية) -->
+        <template x-if="currentView === 'owner_dashboard'">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
+                    <div>
+                        <span class="text-xs text-gray-400 block">مرحباً بك،</span>
+                        <span class="font-bold text-gray-700">صاحب الكلب</span>
+                    </div>
+                    <button @click="currentView = 'login'" class="text-red-500 text-xs font-medium"><i class="fa-solid fa-right-from-bracket ml-1"></i> خروج</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-5 space-y-4">
+                    <h3 class="font-bold text-gray-800 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-file-circle-plus text-emerald-600 ml-2"></i> طلب تمشية جديد
+                    </h3>
+
+                    <div class="space-y-3 text-right text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">اسم الكلب ونوعه</label>
+                            <input type="text" placeholder="مثال: ريكس - هاسكي" class="w-full border rounded-lg p-2.5 outline-none focus:border-emerald-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">الكلب شرس؟</label>
+                                <select class="w-full border rounded-lg p-2.5 outline-none bg-white">
+                                    <option>لا، هادئ</option>
+                                    <option>نعم، يحتاج حذر</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">التطعيمات سارية؟</label>
+                                <select class="w-full border rounded-lg p-2.5 outline-none bg-white">
+                                    <option>نعم، بالكامل</option>
+                                    <option>لا</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">رفع صورة شهادة التطعيمات</label>
+                            <input type="file" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">من الساعة</label>
+                                <input type="time" class="w-full border rounded-lg p-2.5 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">إلى الساعة</label>
+                                <input type="time" class="w-full border rounded-lg p-2.5 outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">طريقة الدفع (مسبق مؤكد)</label>
+                            <select x-model="paymentMethod" class="w-full border rounded-lg p-2.5 outline-none bg-white">
+                                <option value="instapay">انستا باي (InstaPay)</option>
+                                <option value="vodafone">فودافون كاش</option>
+                            </select>
+                            <div class="mt-2 p-3 bg-emerald-50 rounded-lg text-xs text-emerald-800">
+                                <p class="font-bold">حساب التحويل:</p>
+                                <p x-text="paymentMethod === 'instapay' ? 'IPN: dogwalker@instapay' : 'Vodafone Cash: 01012345678'"></p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">رفع صورة إيصال التحويل</label>
+                            <input type="file" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        </div>
+
+                        <button @click="alert('تم إرسال الطلب بنجاح وفي انتظار تأكيد الأدمن!')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition mt-3">
+                            تأكيد الطلب ودفع الرسوم
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- 3. WALKER DASHBOARD (المشّاي) -->
+        <template x-if="currentView === 'walker_dashboard'">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
+                    <div>
+                        <span class="text-xs text-gray-400 block">مرحباً بك،</span>
+                        <span class="font-bold text-gray-700">مشّاي معتمد</span>
+                    </div>
+                    <button @click="currentView = 'login'" class="text-red-500 text-xs font-medium"><i class="fa-solid fa-right-from-bracket ml-1"></i> خروج</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-5 space-y-4 text-right text-sm">
+                    <h3 class="font-bold text-gray-800 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-id-card text-blue-600 ml-2"></i> بيانات التسجيل والقبض
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">رفع صورة البطاقة الشخصية (وجه وظهر)</label>
+                        <input type="file" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">رفع الفيش الجنائي (صحيفة الحالة الجنائية)</label>
+                        <input type="file" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">طريقة استلام الأرباح</label>
+                        <select class="w-full border rounded-lg p-2.5 outline-none bg-white">
+                            <option>فودافون كاش</option>
+                            <option>انستا باي</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3 bg-amber-50 rounded-lg text-xs text-amber-800 border border-amber-200">
+                        <i class="fa-solid fa-triangle-exclamation ml-1"></i> حسابك قيد المراجعة من الأدمن لحين التحقق من الأوراق والمستندات.
+                    </div>
+
+                    <button @click="currentView = 'live_tracking'" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition">
+                        معاينة شاشة التتبع الحي (تجريبي)
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- 4. LIVE GPS TRACKING VIEW -->
+        <template x-if="currentView === 'live_tracking' || currentView === 'admin'">
+            <div class="bg-white rounded-2xl shadow-xl p-4 space-y-4 text-right">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 class="font-bold text-gray-800"><i class="fa-solid fa-map-location-dot text-emerald-600 ml-1"></i> خريطة التتبع الحي للرحلة</h3>
+                    <button @click="currentView = 'owner_dashboard'" class="text-xs text-emerald-600 font-bold">رجوع</button>
+                </div>
+
+                <!-- Fake Map Container -->
+                <div class="relative w-full h-64 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center border">
+                    <div class="absolute inset-0 bg-emerald-50 opacity-50"></div>
+                    <!-- Route Line Simulation -->
+                    <div class="absolute w-3/4 h-1 bg-emerald-500 rounded-full rotate-12"></div>
+                    <div class="absolute top-12 right-16 bg-emerald-600 text-white px-2 py-1 rounded-full text-xs shadow animate-bounce">
+                        <i class="fa-solid fa-dog"></i> الكلب هنا
+                    </div>
+                    <div class="absolute bottom-8 left-12 bg-blue-600 text-white px-2 py-1 rounded-full text-xs shadow">
+                        <i class="fa-solid fa-person-walking"></i> المشّاي
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                    <div class="bg-gray-50 p-3 rounded-xl border">
+                        <span class="text-gray-400 block">المسافة المققطوعة</span>
+                        <span class="font-bold text-gray-800 text-sm">1.8 كم</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-xl border">
+                        <span class="text-gray-400 block">الوقت المنقضي</span>
+                        <span class="font-bold text-gray-800 text-sm">25 دقيقة</span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- 5. ADMIN DASHBOARD (لوحة تحكم الأدمن) -->
+        <template x-if="currentView === 'admin'">
+            <div class="space-y-4 mt-4">
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-right text-xs space-y-2">
+                    <h4 class="font-bold text-amber-900 text-sm"><i class="fa-solid fa-shield-halved ml-1"></i> لوحة التحكم الإدارية الخاصة بك</h4>
+                    <p class="text-amber-800">هنا يمكنك مراجعة طلبات المشّايين الجدد وتأكيد إيصالات التحويل المالية.</p>
+                    
+                    <div class="bg-white p-3 rounded-lg shadow-sm space-y-2 mt-2">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <span class="font-bold">طلب مشّاي جديد: أحمد محمد</span>
+                            <span class="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">قيد المراجعة</span>
+                        </div>
+                        <p class="text-gray-500">تم رفع صورة البطاقة والفيش الجنائي بنجاح.</p>
+                        <div class="flex gap-2 pt-1">
+                            <button @click="alert('تمت الموافقة على المشّاي وتفعيله بنجاح!')" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs">قبول وتفعيل</button>
+                            <button @click="alert('تم رفض الطلب.')" class="bg-red-500 text-white px-3 py-1 rounded text-xs">رفض</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </main>
+
+    <script>
+        function appData() {
+            return {
+                currentView: 'login',
+                role: '',
+                phone: '',
+                paymentMethod: 'instapay'
+            }
+        }
+    </script>
+</body>
+</html>
