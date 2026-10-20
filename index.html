@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق المشي مع الكلاب - Dog Walking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        // إعدادات وتخزين البيانات
+        let generatedOTP = "";
+        let currentUserPhone = "";
+        let currentUserRole = "client";
+
+        // استرجاع التقييمات المخزنة
+        function getStoredReviews() {
+            const saved = localStorage.getItem('dogwalk_reviews');
+            if(saved) return JSON.parse(saved);
+            return [
+                { name: "محمد علي", comment: "خدمة ممتازة والتعامل محترف جداً مع الكلاب!", rating: 5, date: "2026/10/18" },
+                { name: "سارة أحمد", comment: "الكابتن وصل في موعده بالظبط وسعيد بالتعامل معكم.", rating: 5, date: "2026/10/19" }
+            ];
+        }
+
+        function saveReviews(reviews) {
+            localStorage.setItem('dogwalk_reviews', JSON.stringify(reviews));
+        }
+
+        // استرجاع الطلبات المخزنة
+        function getStoredBookings() {
+            const saved = localStorage.getItem('dogwalk_bookings');
+            if(saved) return JSON.parse(saved);
+            return [];
+        }
+
+        function saveBookings(bookings) {
+            localStorage.setItem('dogwalk_bookings', JSON.stringify(bookings));
+        }
+
+        window.onload = function() {
+            renderReviews();
+        };
+
+        // 1. إرسال OTP
+        function sendOTP() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if(!phone || phone.length < 10) {
+                alert("يرجى إدخال رقم هاتف صحيح!");
+                return;
+            }
+            currentUserPhone = phone;
+            currentUserRole = document.getElementById('roleSelect').value;
+            
+            // توليد رمز تحقق عشوائي
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            alert(`[رمز الأمان الخاصة بك]: ${generatedOTP}\nتم إرسال رمز التحقق بنجاح لـ ${phone}`);
+            
+            document.getElementById('otp-section').classList.remove('hidden');
+        }
+
+        // 2. تأكيد الـ OTP
+        function verifyOTP() {
+            const inputCode = document.getElementById('otpInput').value.trim();
+            if(inputCode !== generatedOTP) {
+                alert("رمز التحقق غير صحيح! يرجى التأكد من الرمز المكتوب.");
+                return;
+            }
+
+            alert("تم تسجيل الدخول بنجاح!");
+            document.getElementById('auth-modal').classList.add('hidden');
+
+            if(currentUserRole === 'client') {
+                document.getElementById('booking-section').classList.remove('hidden');
+                document.getElementById('my-orders-section').classList.remove('hidden');
+                renderMyOrders();
+            } else {
+                document.getElementById('walker-section').classList.remove('hidden');
+            }
+        }
+
+        // 3. إرسال طلب حجز
+        function submitBooking() {
+            const name = document.getElementById('clientName').value.trim();
+            const address = document.getElementById('clientAddress').value.trim();
+            const hours = document.getElementById('hoursCount').value;
+            const totalPrice = hours * 500;
+
+            if(!name || !address) {
+                alert("يرجى إكمال جميع بيانات الحجز والعنوان!");
+                return;
+            }
+
+            const bookings = getStoredBookings();
+            const newOrder = {
+                id: Date.now(),
+                clientName: name,
+                clientPhone: currentUserPhone,
+                address: address,
+                hours: hours,
+                totalPrice: totalPrice,
+                status: 'قيد الانتظار',
+                etaMinutes: 0
+            };
+
+            bookings.push(newOrder);
+            saveBookings(bookings);
+
+            alert(`تم إرسال طلبك بنجاح!\nالإجمالي: ${totalPrice} ج.م.\nطريقة الدفع: فودافون كاش أو إنستا باي على الرقم 01030145357`);
+            
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientAddress').value = '';
+            renderMyOrders();
+        }
+
+        // 4. عرض طلبات العميل الحالية
+        function renderMyOrders() {
+            const bookings = getStoredBookings();
+            const container = document.getElementById('myOrdersList');
+            const myOrders = bookings.filter(b => b.clientPhone === currentUserPhone);
+
+            if(myOrders.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-400">لا توجد طلبات حجز حالية.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            myOrders.forEach(item => {
+                let statusColor = 'text-yellow-400';
+                if(item.status === 'مقبول' || item.status === 'الكابتن في الطريق') statusColor = 'text-green-400';
+                if(item.status === 'مرفوض') statusColor = 'text-red-400';
+
+                container.innerHTML += `
+                    <div class="bg-gray-700 p-4 rounded-lg mb-3 border border-gray-600">
+                        <p><b>الاسم:</b> ${item.clientName}</p>
+                        <p><b>المدة:</b> ${item.hours} ساعة (${item.totalPrice} EGP)</p>
+                        <p><b>الحالة:</b> <span class="${statusColor} font-bold">${item.status}</span></p>
+                        ${item.etaMinutes > 0 ? `<p class="mt-2 text-indigo-300 font-bold">⏱️ الوقت المتوقع لوصول الكابتن: ${item.etaMinutes} دقيقة</p>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        // 5. تسجيل دخول الآدمن
+        function loadAdminDashboard() {
+            const passcode = prompt("أدخل كلمة سر لوحة التحكم:");
+            if (passcode !== "1234" && passcode !== "admin123") {
+                alert("كلمة السر غير صحيحة!");
+                return;
+            }
+            document.getElementById('admin-panel').classList.remove('hidden');
+            renderAdminOrders();
+        }
+
+        function renderAdminOrders() {
+            const bookings = getStoredBookings();
+            const list = document.getElementById('adminOrdersList');
+
+            if(bookings.length === 0) {
+                list.innerHTML = '<p class="text-gray-400 text-sm">لا توجد طلبات جديدة حالياً.</p>';
+                return;
+            }
+
+            list.innerHTML = '';
+            bookings.forEach(b => {
+                list.innerHTML += `
+                    <div class="bg-white text-black p-4 rounded mb-3 shadow">
+                        <p><b>العميل:</b> ${b.clientName} (${b.clientPhone})</p>
+                        <p><b>العنوان:</b> ${b.address}</p>
+                        <p><b>الساعات:</b> ${b.hours} - <b>الإجمالي:</b> ${b.totalPrice} EGP</p>
+                        <p><b>الحالة:</b> <span class="font-bold text-indigo-600">${b.status}</span></p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button onclick="updateOrderStatus(${b.id}, 'مقبول')" class="bg-green-600 text-white px-3 py-1 rounded text-xs">قبول</button>
+                            <button onclick="updateOrderStatus(${b.id}, 'مرفوض')" class="bg-red-600 text-white px-3 py-1 rounded text-xs">رفض</button>
+                            <button onclick="setETA(${b.id})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">تحديد وقت الوصول</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            let bookings = getStoredBookings();
+            let order = bookings.find(b => b.id === orderId);
+            if(order) {
+                order.status = newStatus;
+                saveBookings(bookings);
+                alert(`تم تغيير حالة الطلب إلى (${newStatus}) وتحديثها لدى العميل!`);
+                renderAdminOrders();
+                renderMyOrders();
+            }
+        }
+
+        function setETA(orderId) {
+            const minutes = prompt("أدخل الوقت المتوقع لوصول الكابتن (بالدقائق):", "20");
+            if(minutes) {
+                let bookings = getStoredBookings();
+                let order = bookings.find(b => b.id === orderId);
+                if(order) {
+                    order.etaMinutes = minutes;
+                    order.status = 'الكابتن في الطريق';
+                    saveBookings(bookings);
+                    alert(`تم تحديد وقت الوصول (${minutes} دقيقة) وإشعار العميل بها!`);
+                    renderAdminOrders();
+                    renderMyOrders();
+                }
+            }
+        }
+
+        // 6. إضافة عرض التقييمات والتعليقات
+        function addReview() {
+            const name = document.getElementById('reviewName').value.trim();
+            const comment = document.getElementById('reviewComment').value.trim();
+            const rating = parseInt(document.getElementById('reviewRating').value);
+
+            if(!name || !comment) {
+                alert("يرجى إدخال الاسم والتعليق قبل الإرسال!");
+                return;
+            }
+
+            const reviews = getStoredReviews();
+            reviews.unshift({
+                name: name,
+                comment: comment,
+                rating: rating,
+                date: new Date().toLocaleDateString('ar-EG')
+            });
+
+            saveReviews(reviews);
+            renderReviews();
+
+            document.getElementById('reviewName').value = '';
+            document.getElementById('reviewComment').value = '';
+            alert("تم إضافة تقييمك بنجاح! شكراً لك.");
+        }
+
+        function renderReviews() {
+            const reviews = getStoredReviews();
+            const container = document.getElementById('reviewsContainer');
+            container.innerHTML = '';
+
+            reviews.forEach(r => {
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                container.innerHTML += `
+                    <div class="bg-gray-700 p-3 rounded mb-2 border border-gray-600">
+                        <div class="flex justify-between items-center text-yellow-400">
+                            <b class="text-white">${r.name}</b>
+                            <span>${stars}</span>
+                        </div>
+                        <p class="text-sm text-gray-200 mt-1">${r.comment}</p>
+                        <span class="text-xs text-gray-400 block mt-1">${r.date}</span>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white font-sans" dir="rtl">
+
+    <div class="container mx-auto p-4 max-w-xl">
+        <h1 class="text-3xl font-bold text-center text-indigo-400 my-4">تطبيق المشي مع الكلاب 🐕</h1>
+
+        <!-- مميزاتنا -->
+        <div class="bg-gray-800 p-4 rounded-lg mb-6 border border-gray-700 text-sm">
+            <h3 class="font-bold text-indigo-300 mb-2 text-base">✨ مميزات الخدمة:</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li>مدربون محترفون ومتخصصون في التعامل مع جميع السلالات.</li>
+                <li>متابعة مباشرة وتحديثات فورية لحالة الجولة ووقت الوصول.</li>
+                <li>سعر ثابت: <b>500 جنيه/ساعة</b>.</li>
+            </ul>
+        </div>
+
+        <!-- تسجيل الدخول -->
+        <div id="auth-modal" class="bg-gray-800 p-6 rounded-lg mb-6 border border-gray-700 shadow-md">
+            <h2 class="text-lg font-bold mb-3 text-white">تسجيل الدخول / الانضمام</h2>
+            <label class="block text-sm mb-1 text-gray-300">نوع الحساب:</label>
+            <select id="roleSelect" class="w-full p-3 bg-gray-700 rounded mb-3 text-white border border-gray-600">
+                <option value="client">عميل (أطلب مشي لكلبي)</option>
+                <option value="walker">ممشّي كلاب (الانضمام لفريق العمل)</option>
+            </select>
+
+            <label class="block text-sm mb-1 text-gray-300">رقم الهاتف:</label>
+            <input type="text" id="phoneInput" value="+20" placeholder="+2010xxxxxxx" class="w-full p-3 bg-gray-700 rounded mb-3 text-left text-white border border-gray-600" dir="ltr">
+            <button onclick="sendOTP()" class="w-full bg-indigo-600 p-3 rounded font-bold hover:bg-indigo-700 text-white cursor-pointer">إرسال رمز التحقق OTP</button>
+
+            <div id="otp-section" class="hidden mt-4">
+                <input type="text" id="otpInput" placeholder="أدخل رمز التحقق المرسل" class="w-full p-3 bg-gray-700 rounded mb-3 text-white border border-gray-600">
+                <button onclick="verifyOTP()" class="w-full bg-green-600 p-3 rounded font-bold hover:bg-green-700 text-white cursor-pointer">تأكيد الرمز والدخول</button>
+            </div>
+        </div>
+
+        <!-- قسم الحجز للعميل -->
+        <div id="booking-section" class="hidden bg-gray-800 p-6 rounded-lg mb-6 border border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-indigo-300">طلب خدمة جديدة</h2>
+            <input type="text" id="clientName" placeholder="الاسم بالكامل" class="w-full p-3 bg-gray-700 rounded mb-3 text-white border border-gray-600">
+            <input type="text" id="clientAddress" placeholder="العنوان بالتفصيل" class="w-full p-3 bg-gray-700 rounded mb-3 text-white border border-gray-600">
+            <label class="block mb-1 text-sm text-gray-300">عدد الساعات:</label>
+            <input type="number" id="hoursCount" value="1" min="1" class="w-full p-3 bg-gray-700 rounded mb-4 text-white border border-gray-600">
+            
+            <div class="bg-yellow-900 bg-opacity-30 p-3 rounded mb-4 border border-yellow-600 text-sm text-yellow-200">
+                <p>الدفع عبر فودافون كاش أو إنستا باي على الرقم: <b>01030145357</b></p>
+            </div>
+            <button onclick="submitBooking()" class="w-full bg-blue-600 p-3 rounded font-bold hover:bg-blue-700 text-white cursor-pointer">إرسال الطلب</button>
+        </div>
+
+        <!-- متابعة الطلبات للعميل -->
+        <div id="my-orders-section" class="hidden bg-gray-800 p-6 rounded-lg mb-6 border border-gray-700">
+            <h2 class="text-lg font-bold mb-3 text-indigo-300">متابعة طلباتك الحالية:</h2>
+            <div id="myOrdersList"></div>
+        </div>
+
+        <!-- واجهة ممشّي الكلاب -->
+        <div id="walker-section" class="hidden bg-gray-800 p-6 rounded-lg mb-6 border border-gray-700">
+            <h2 class="text-lg font-bold mb-2 text-indigo-300">مرحباً بك في فريق ممشّي الكلاب 🐕</h2>
+            <p class="text-sm text-gray-300">تم تسجيل حسابك بنجاح ككابتن. سيتم التواصل معك من قبل إدارة التطبيق لتفعيل حسابك واستلام الجولات.</p>
+        </div>
+
+        <!-- تقييمات وآراء العملاء -->
+        <div class="bg-gray-800 p-6 rounded-lg mb-6 border border-gray-700">
+            <h3 class="font-bold text-lg mb-3 text-indigo-300">آراء وتقييمات العملاء ⭐</h3>
+            <div id="reviewsContainer" class="max-h-48 overflow-y-auto mb-4"></div>
+            
+            <div class="border-t border-gray-700 pt-3 mt-2">
+                <h4 class="text-sm font-bold mb-2">أضف تقييمك:</h4>
+                <input type="text" id="reviewName" placeholder="اسمك" class="w-full p-2 bg-gray-700 rounded mb-2 text-sm text-white border border-gray-600">
+                <textarea id="reviewComment" placeholder="رأيك في الخدمة..." class="w-full p-2 bg-gray-700 rounded mb-2 text-sm text-white border border-gray-600"></textarea>
+                <select id="reviewRating" class="w-full p-2 bg-gray-700 rounded mb-3 text-sm text-white border border-gray-600">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                    <option value="3">⭐⭐⭐ (3/5)</option>
+                </select>
+                <button onclick="addReview()" class="w-full bg-indigo-600 p-2 rounded text-sm font-bold hover:bg-indigo-700 text-white cursor-pointer">إرسال التقييم</button>
+            </div>
+        </div>
+
+        <!-- دخول الآدمن -->
+        <div class="text-center mt-4">
+            <button onclick="loadAdminDashboard()" class="text-xs text-gray-500 hover:text-gray-300 cursor-pointer">تسجيل دخول الإدارة (Admin)</button>
+        </div>
+
+        <div id="admin-panel" class="hidden mt-6 bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 class="font-bold text-indigo-400 mb-3">لوحة التحكم الكاملة</h3>
+            <div id="adminOrdersList"></div>
+        </div>
+    </div>
+
+</body>
+</html>
