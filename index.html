@@ -11,14 +11,13 @@
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // إعدادات المشروع الخاصة بك من Firebase[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span)
         const firebaseConfig = {
-            apiKey: "AIzaSyDJBOXINtzk-A19gEx-hxB...", // استبدلها بالكامل لو احتجت من كودك
-            authDomain: "dogwalk-app-db522.firebaseapp.com",[span_3](start_span)[span_3](end_span)
-            projectId: "dogwalk-app-db522",[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+            apiKey: "AIzaSyDJBOXINtzk-A19gEx-hxB...", 
+            authDomain: "dogwalk-app-db522.firebaseapp.com",[span_1](start_span)[span_1](end_span)
+            projectId: "dogwalk-app-db522",[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
             storageBucket: "dogwalk-app-db522.firebasestorage.app",
-            messagingSenderId: "107510774969",[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
-            appId: "1:107510774969:web:9df863073...[span_8](start_span)"[span_8](end_span)
+            messagingSenderId: "107510774969",[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+            appId: "1:107510774969:web:9df863073...[span_6](start_span)"[span_6](end_span)
         };
 
         const app = initializeApp(firebaseConfig);
@@ -26,18 +25,26 @@
         const db = getDatabase(app);
         auth.languageCode = 'ar';
 
-        // تفعيل ريكابتشا التحقق
-        window.setupRecaptcha = function() {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                'size': 'invisible',
-                'callback': (response) => {
-                    window.sendOTP();
-                }
-            });
-        };
+        // إعداد ريكابتشا بشكل آمن
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        // يتم استدعاؤها عند نجاح التحقق
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        });
 
         window.sendOTP = function() {
             const phoneNumber = document.getElementById('phoneInput').value;
+            if(!phoneNumber) {
+                alert("يرجى إدخال رقم الهاتف مع الرمز الدولي (مثال: +2011xxxxxxxx)");
+                return;
+            }
             const appVerifier = window.recaptchaVerifier;
             signInWithPhoneNumber(auth, phoneNumber, appVerifier)
                 .then((confirmationResult) => {
@@ -46,14 +53,17 @@
                     document.getElementById('otp-section').classList.remove('hidden');
                 }).catch((error) => {
                     console.error("خطأ في إرسال الرمز:", error);
-                    alert("فشل إرسال الرمز، تأكد من صحة رقم الهاتف (مثال: +2010xxxxxxxx)");
+                    alert("فشل إرسال الرمز. تأكد من تفعيل Phone Auth في Firebase وإضافة النطاق المعتمد.");
                 });
         };
 
         window.verifyOTP = function() {
             const code = document.getElementById('otpInput').value;
+            if(!code) {
+                alert("يرجى إدخال رمز التحقق");
+                return;
+            }
             window.confirmationResult.confirm(code).then((result) => {
-                const user = result.user;
                 alert("تم تسجيل الدخول بنجاح!");
                 document.getElementById('auth-modal').classList.add('hidden');
                 document.getElementById('booking-section').classList.remove('hidden');
@@ -62,12 +72,16 @@
             });
         };
 
-        // حفظ الحجز في قاعدة البيانات
         window.submitBooking = function() {
             const name = document.getElementById('clientName').value;
             const phone = document.getElementById('clientPhone').value;
             const hours = document.getElementById('hoursCount').value;
             const totalPrice = hours * 500;
+
+            if(!name || !phone) {
+                alert("يرجى إكمال بيانات الحجز");
+                return;
+            }
 
             const bookingsRef = ref(db, 'bookings');
             const newBookingRef = push(bookingsRef);
@@ -79,15 +93,14 @@
                 status: 'قيد الانتظار',
                 timestamp: Date.now()
             }).then(() => {
-                alert(`تم إرسال طلبك بنجاح! الإجمالي: ${totalPrice} جنيه. يرجى التحويل على فودافون كاش أو إنستا باي: 01030145357`);
+                alert(`تم إرسال طلبك بنجاح! الإجمالي: ${totalPrice} جنيه. يرجى التحويل على فودافون كاش أو إنستا باي: 01030145357`);[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span)
                 location.reload();
             });
         };
 
-        // جلب الطلبات للآدمن
         window.loadAdminDashboard = function() {
             const passcode = prompt("أدخل كلمة سر لوحة التحكم:");
-            if (passcode !== "1234") { // كلمة سر الآدمن الخاصة بك، يمكنك تغييرها
+            if (passcode !== "1234") {
                 alert("كلمة السر غير صحيحة!");
                 return;
             }
@@ -100,15 +113,15 @@
                 for (let id in data) {
                     const booking = data[id];
                     list.innerHTML += `
-                        <div class="bg-white p-4 rounded shadow mb-2 flex justify-between items-center">
+                        <div class="bg-white p-4 rounded shadow mb-2 flex justify-between items-center text-black">
                             <div>
                                 <p><b>العميل:</b> ${booking.clientName} (${booking.clientPhone})</p>
                                 <p><b>المدة:</b> ${booking.hours} ساعة - <b>الإجمالي:</b> ${booking.totalPrice} EGP</p>
                                 <p><b>الحالة:</b> <span class="text-blue-600">${booking.status}</span></p>
                             </div>
                             <div>
-                                <button onclick="updateStatus('${id}', 'مقبول')" class="bg-green-500 text-px px-3 py-1 text-white rounded ml-2">قبول</button>
-                                <button onclick="updateStatus('${id}', 'مرفوض')" class="bg-red-500 text-px px-3 py-1 text-white rounded">رفض</button>
+                                <button onclick="updateStatus('${id}', 'مقبول')" class="bg-green-500 px-3 py-1 text-white rounded ml-2">قبول</button>
+                                <button onclick="updateStatus('${id}', 'مرفوض')" class="bg-red-500 px-3 py-1 text-white rounded">رفض</button>
                             </div>
                         </div>
                     `;
@@ -122,48 +135,48 @@
         };
     </script>
 </head>
-<body class="bg-gray-100 font-sans text-right" dir="rtl">
+<body class="bg-gray-900 font-sans text-right text-white" dir="rtl">
 
     <div class="container mx-auto p-6 max-w-xl">
-        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">تطبيق المشي مع الكلاب 🐕</h1>
+        <h1 class="text-3xl font-bold text-center text-indigo-400 mb-6">تطبيق المشي مع الكلاب 🐕</h1>
         
         <!-- قسم المصادقة برقم الهاتف -->
-        <div id="auth-modal" class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold mb-4">تسجيل الدخول برقم الهاتف (OTP)</h2>
-            <input type="text" id="phoneInput" placeholder="+2010xxxxxxxx" class="w-full p-2 border rounded mb-3">
+        <div id="auth-modal" class="bg-gray-800 p-6 rounded-lg shadow-md mb-6 border border-gray-700">
+            <h2 class="text-xl font-semibold mb-4 text-white">تسجيل الدخول برقم الهاتف (OTP)</h2>
+            <input type="text" id="phoneInput" value="+20" class="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
             <div id="recaptcha-container"></div>
-            <button onclick="window.setupRecaptcha(); window.sendOTP();" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">إرسال رمز التحقق</button>
+            <button onclick="window.sendOTP()" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 font-bold">إرسال رمز التحقق</button>
             
             <div id="otp-section" class="hidden mt-4">
-                <input type="text" id="otpInput" placeholder="أدخل رمز الـ OTP المكون من 6 أرقام" class="w-full p-2 border rounded mb-3">
-                <button onclick="window.verifyOTP()" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">تأكيد الرمز والدخول</button>
+                <input type="text" id="otpInput" placeholder="أدخل رمز الـ OTP المكون من 6 أرقام" class="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
+                <button onclick="window.verifyOTP()" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 font-bold">تأكيد الرمز والدخول</button>
             </div>
         </div>
 
-        <!-- قسم طلب خدمة المشي (يظهر بعد تسجيل الدخول) -->
-        <div id="booking-section" class="hidden bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold mb-4">حجز موعد مشي جديد (500 EGP / ساعة)</h2>
-            <input type="text" id="clientName" placeholder="اسمك الكريم" class="w-full p-2 border rounded mb-3">
-            <input type="text" id="clientPhone" placeholder="رقم الهاتف" class="w-full p-2 border rounded mb-3">
-            <label class="block mb-2">عدد الساعات المطلوبة:</label>
-            <input type="number" id="hoursCount" value="1" min="1" class="w-full p-2 border rounded mb-4">
+        <!-- قسم طلب خدمة المشي -->
+        <div id="booking-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-md mb-6 border border-gray-700">
+            <h2 class="text-xl font-semibold mb-4 text-white">حجز موعد مشي جديد (500 EGP / ساعة)</h2>
+            <input type="text" id="clientName" placeholder="اسمك الكريم" class="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
+            <input type="text" id="clientPhone" placeholder="رقم الهاتف" class="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-3 text-white">
+            <label class="block mb-2 text-white">عدد الساعات المطلوبة:</label>
+            <input type="number" id="hoursCount" value="1" min="1" class="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-4 text-white">
             
-            <div class="bg-yellow-50 p-3 rounded mb-4 border border-yellow-200">
-                <p class="text-sm font-bold text-yellow-800">طرق الدفع المعتمدة:</p>
-                <p class="text-sm text-yellow-700">تحويل فودافون كاش أو إنستا باي على الرقم: <b>01030145357</b>[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)</p>
+            <div class="bg-yellow-900 bg-opacity-40 p-3 rounded mb-4 border border-yellow-600">
+                <p class="text-sm font-bold text-yellow-300">طرق الدفع المعتمدة:</p>
+                <p class="text-sm text-yellow-200">تحويل فودافون كاش أو إنستا باي على الرقم: <b>01030145357</b>[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)</p>
             </div>
 
-            <button onclick="window.submitBooking()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">تأكيد وإرسال الحجز</button>
+            <button onclick="window.submitBooking()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 font-bold">تأكيد وإرسال الحجز</button>
         </div>
 
-        <!-- زر الدخول للوحة التحكم (خاص بك) -->
-        <div class="text-center mt-6">
-            <button onclick="window.loadAdminDashboard()" class="text-sm text-gray-500 underline">تسجيل دخول لوحة تحكم الآدمن ⚙️</button>
+        <!-- زر واضع وبارز للوصول للوحة التحكم -->
+        <div class="text-center mt-6 bg-gray-800 p-3 rounded-lg border border-gray-700">
+            <button onclick="window.loadAdminDashboard()" class="text-indigo-400 font-bold underline text-lg">⚙️ تسجيل دخول لوحة تحكم الآدمن</button>
         </div>
 
         <!-- لوحة تحكم الآدمن -->
-        <div id="admin-panel" class="hidden mt-8 bg-gray-200 p-4 rounded-lg">
-            <h2 class="text-xl font-bold mb-4 text-indigo-900">لوحة تحكم الآدمن (إدارة الطلبات)</h2>
+        <div id="admin-panel" class="hidden mt-8 bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-indigo-400">لوحة تحكم الآدمن (إدارة الطلبات)</h2>
             <div id="adminOrdersList"></div>
         </div>
     </div>
