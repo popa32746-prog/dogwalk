@@ -3,154 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق ممشى الكلاب - Dog Walking</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding: 20px; }
-        .container { max-width: 400px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
-        button { width: 100%; background: #27ae60; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background: #219653; }
-        .secondary-btn { background: #e74c3c; margin-top: 5px; }
-        .secondary-btn:hover { background: #c0392b; }
-        .hidden { display: none; }
-        .info-box { background: #e8f8f5; border: 1px solid #a3e4d7; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; color: #117a65; }
-        .price-tag { font-size: 20px; font-weight: bold; color: #d35400; text-align: center; margin: 15px 0; }
-        .pay-number { font-size: 22px; font-weight: bold; color: #c0392b; text-align: center; margin: 8px 0; direction: ltr; }
-    </style>
+    <title>تطبيق المشي مع الكلاب - Dog Walking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // إعدادات المشروع الخاصة بك من Firebase[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJBOXINtzk-A19gEx-hxB...", // استبدلها بالكامل لو احتجت من كودك
+            authDomain: "dogwalk-app-db522.firebaseapp.com",[span_3](start_span)[span_3](end_span)
+            projectId: "dogwalk-app-db522",[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+            storageBucket: "dogwalk-app-db522.firebasestorage.app",
+            messagingSenderId: "107510774969",[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
+            appId: "1:107510774969:web:9df863073...[span_8](start_span)"[span_8](end_span)
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        auth.languageCode = 'ar';
+
+        // تفعيل ريكابتشا التحقق
+        window.setupRecaptcha = function() {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response) => {
+                    window.sendOTP();
+                }
+            });
+        };
+
+        window.sendOTP = function() {
+            const phoneNumber = document.getElementById('phoneInput').value;
+            const appVerifier = window.recaptchaVerifier;
+            signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    alert("تم إرسال رمز التحقق (OTP) بنجاح إلى هاتفك!");
+                    document.getElementById('otp-section').classList.remove('hidden');
+                }).catch((error) => {
+                    console.error("خطأ في إرسال الرمز:", error);
+                    alert("فشل إرسال الرمز، تأكد من صحة رقم الهاتف (مثال: +2010xxxxxxxx)");
+                });
+        };
+
+        window.verifyOTP = function() {
+            const code = document.getElementById('otpInput').value;
+            window.confirmationResult.confirm(code).then((result) => {
+                const user = result.user;
+                alert("تم تسجيل الدخول بنجاح!");
+                document.getElementById('auth-modal').classList.add('hidden');
+                document.getElementById('booking-section').classList.remove('hidden');
+            }).catch((error) => {
+                alert("رمز التحقق غير صحيح!");
+            });
+        };
+
+        // حفظ الحجز في قاعدة البيانات
+        window.submitBooking = function() {
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            const hours = document.getElementById('hoursCount').value;
+            const totalPrice = hours * 500;
+
+            const bookingsRef = ref(db, 'bookings');
+            const newBookingRef = push(bookingsRef);
+            set(newBookingRef, {
+                clientName: name,
+                clientPhone: phone,
+                hours: hours,
+                totalPrice: totalPrice,
+                status: 'قيد الانتظار',
+                timestamp: Date.now()
+            }).then(() => {
+                alert(`تم إرسال طلبك بنجاح! الإجمالي: ${totalPrice} جنيه. يرجى التحويل على فودافون كاش أو إنستا باي: 01030145357`);
+                location.reload();
+            });
+        };
+
+        // جلب الطلبات للآدمن
+        window.loadAdminDashboard = function() {
+            const passcode = prompt("أدخل كلمة سر لوحة التحكم:");
+            if (passcode !== "1234") { // كلمة سر الآدمن الخاصة بك، يمكنك تغييرها
+                alert("كلمة السر غير صحيحة!");
+                return;
+            }
+            document.getElementById('admin-panel').classList.remove('hidden');
+            const bookingsRef = ref(db, 'bookings');
+            onValue(bookingsRef, (snapshot) => {
+                const data = snapshot.val();
+                const list = document.getElementById('adminOrdersList');
+                list.innerHTML = '';
+                for (let id in data) {
+                    const booking = data[id];
+                    list.innerHTML += `
+                        <div class="bg-white p-4 rounded shadow mb-2 flex justify-between items-center">
+                            <div>
+                                <p><b>العميل:</b> ${booking.clientName} (${booking.clientPhone})</p>
+                                <p><b>المدة:</b> ${booking.hours} ساعة - <b>الإجمالي:</b> ${booking.totalPrice} EGP</p>
+                                <p><b>الحالة:</b> <span class="text-blue-600">${booking.status}</span></p>
+                            </div>
+                            <div>
+                                <button onclick="updateStatus('${id}', 'مقبول')" class="bg-green-500 text-px px-3 py-1 text-white rounded ml-2">قبول</button>
+                                <button onclick="updateStatus('${id}', 'مرفوض')" class="bg-red-500 text-px px-3 py-1 text-white rounded">رفض</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        };
+
+        window.updateStatus = function(id, status) {
+            const bookingRef = ref(db, 'bookings/' + id);
+            update(bookingRef, { status: status });
+        };
+    </script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans text-right" dir="rtl">
 
-    <div class="container">
-        <!-- شاشة تسجيل الدخول -->
-        <div id="auth-screen">
-            <h2>تسجيل الدخول / حساب جديد</h2>
-            <div class="form-group">
-                <label>الاسم الكامل:</label>
-                <input type="text" id="user-name" placeholder="اكتب اسمك هنا">
-            </div>
-            <div class="form-group">
-                <label>رقم الموبايل:</label>
-                <input type="tel" id="user-phone" placeholder="010xxxxxxxx">
-            </div>
-            <button onclick="login()">دخول / تسجيل</button>
-        </div>
-
-        <!-- شاشة الحجز الرئيسية -->
-        <div id="booking-screen" class="hidden">
-            <h2>حجز تمشية كلب</h2>
-            <div id="welcome-msg" style="margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+    <div class="container mx-auto p-6 max-w-xl">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">تطبيق المشي مع الكلاب 🐕</h1>
+        
+        <!-- قسم المصادقة برقم الهاتف -->
+        <div id="auth-modal" class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">تسجيل الدخول برقم الهاتف (OTP)</h2>
+            <input type="text" id="phoneInput" placeholder="+2010xxxxxxxx" class="w-full p-2 border rounded mb-3">
+            <div id="recaptcha-container"></div>
+            <button onclick="window.setupRecaptcha(); window.sendOTP();" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">إرسال رمز التحقق</button>
             
-            <div class="form-group">
-                <label>اسم الكلب أو نوعه:</label>
-                <input type="text" id="dog-info" placeholder="مثال: هاسكي، سامويد...">
+            <div id="otp-section" class="hidden mt-4">
+                <input type="text" id="otpInput" placeholder="أدخل رمز الـ OTP المكون من 6 أرقام" class="w-full p-2 border rounded mb-3">
+                <button onclick="window.verifyOTP()" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">تأكيد الرمز والدخول</button>
             </div>
-
-            <div class="form-group">
-                <label>عدد الساعات:</label>
-                <input type="number" id="hours" min="1" value="1" oninput="calculatePrice()">
-            </div>
-
-            <div class="price-tag">
-                الإجمالي: <span id="total-price">500</span> جنيه
-            </div>
-
-            <div class="info-box">
-                <strong>تعليمات الدفع:</strong><br>
-                يرجى تحويل المبلغ عبر <b>فودافون كاش</b> أو <b>إنستا باي (InstaPay)</b> على الرقم التالي:<br>
-                <div class="pay-number">01030145357</div>
-                ثم اضغط تأكيد الطلب لإرساله للآدمن مع تفاصيل الحجز.
-            </div>
-
-            <button onclick="submitBooking()">تأكيد وإرسال الطلب للآدمن</button>
-            <button class="secondary-btn" onclick="logout()">تسجيل خروج</button>
         </div>
 
-        <!-- شاشة النجاح -->
-        <div id="success-screen" class="hidden">
-            <h2>تم إرسال طلبك بنجاح! 🎉</h2>
-            <p style="text-align: center; margin: 20px 0; line-height: 1.6;">
-                تم إرسال بيانات الحجز ورقم التحويل للآدمن بنجاح.<br>
-                سيتم مراجعة الطلب والتواصل معك في أقرب وقت.
-            </p>
-            <button onclick="resetForm()">حجز جديد</button>
+        <!-- قسم طلب خدمة المشي (يظهر بعد تسجيل الدخول) -->
+        <div id="booking-section" class="hidden bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">حجز موعد مشي جديد (500 EGP / ساعة)</h2>
+            <input type="text" id="clientName" placeholder="اسمك الكريم" class="w-full p-2 border rounded mb-3">
+            <input type="text" id="clientPhone" placeholder="رقم الهاتف" class="w-full p-2 border rounded mb-3">
+            <label class="block mb-2">عدد الساعات المطلوبة:</label>
+            <input type="number" id="hoursCount" value="1" min="1" class="w-full p-2 border rounded mb-4">
+            
+            <div class="bg-yellow-50 p-3 rounded mb-4 border border-yellow-200">
+                <p class="text-sm font-bold text-yellow-800">طرق الدفع المعتمدة:</p>
+                <p class="text-sm text-yellow-700">تحويل فودافون كاش أو إنستا باي على الرقم: <b>01030145357</b>[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)</p>
+            </div>
+
+            <button onclick="window.submitBooking()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">تأكيد وإرسال الحجز</button>
+        </div>
+
+        <!-- زر الدخول للوحة التحكم (خاص بك) -->
+        <div class="text-center mt-6">
+            <button onclick="window.loadAdminDashboard()" class="text-sm text-gray-500 underline">تسجيل دخول لوحة تحكم الآدمن ⚙️</button>
+        </div>
+
+        <!-- لوحة تحكم الآدمن -->
+        <div id="admin-panel" class="hidden mt-8 bg-gray-200 p-4 rounded-lg">
+            <h2 class="text-xl font-bold mb-4 text-indigo-900">لوحة تحكم الآدمن (إدارة الطلبات)</h2>
+            <div id="adminOrdersList"></div>
         </div>
     </div>
 
-    <script>
-        const PRICE_PER_HOUR = 500;
-
-        function login() {
-            const name = document.getElementById('user-name').value.trim();
-            const phone = document.getElementById('user-phone').value.trim();
-
-            if(!name || !phone) {
-                alert('من فضلك ادخل الاسم ورقم الموبايل');
-                return;
-            }
-
-            localStorage.setItem('dogwalk_user', name);
-            localStorage.setItem('dogwalk_phone', phone);
-            
-            showBookingScreen(name);
-        }
-
-        function showBookingScreen(name) {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('booking-screen').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = 'أهلاً بك، ' + name;
-            calculatePrice();
-        }
-
-        function calculatePrice() {
-            let hours = document.getElementById('hours').value;
-            if (hours < 1) hours = 1;
-            let total = hours * PRICE_PER_HOUR;
-            document.getElementById('total-price').innerText = total;
-        }
-
-        function submitBooking() {
-            const name = localStorage.getItem('dogwalk_user');
-            const phone = localStorage.getItem('dogwalk_phone');
-            const dog = document.getElementById('dog-info').value;
-            const hours = document.getElementById('hours').value;
-            const total = hours * PRICE_PER_HOUR;
-
-            if(!dog) {
-                alert('من فضلك ادخل اسم أو نوع الكلب');
-                return;
-            }
-
-            document.getElementById('booking-screen').classList.add('hidden');
-            document.getElementById('success-screen').classList.remove('hidden');
-        }
-
-        function resetForm() {
-            document.getElementById('success-screen').classList.add('hidden');
-            document.getElementById('booking-screen').classList.remove('hidden');
-            document.getElementById('dog-info').value = '';
-            document.getElementById('hours').value = '1';
-            calculatePrice();
-        }
-
-        function logout() {
-            localStorage.clear();
-            document.getElementById('booking-screen').classList.add('hidden');
-            document.getElementById('auth-screen').classList.remove('hidden');
-            document.getElementById('user-name').value = '';
-            document.getElementById('user-phone').value = '';
-        }
-
-        window.onload = function() {
-            const savedName = localStorage.getItem('dogwalk_user');
-            if(savedName) {
-                showBookingScreen(savedName);
-            }
-        }
-    </script>
 </body>
 </html>
-
