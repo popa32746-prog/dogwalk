@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dog Walk PRO | خدمات مشي ورعاية الكلاب</title>
+  <title>Dog Walk PRO | مشي ورعاية الكلاب</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; }
@@ -12,269 +12,273 @@
 </head>
 <body class="pb-20">
 
-  <!-- الهيدر -->
+  <!-- الهيدر مع زر سري للإدارة -->
   <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center">
-    <h1 class="text-xl font-black text-white">DogWalk <span class="text-indigo-400">PRO</span> 🐕</h1>
-    <button onclick="openAdminModal()" class="bg-indigo-900/80 border border-indigo-500/30 text-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold">لوحة الإدارة 🔒</button>
+    <div class="flex items-center gap-2">
+      <span onclick="openAdminModal()" class="w-3 h-3 rounded-full bg-slate-700 cursor-pointer" title="الإدارة"></span>
+      <h1 class="text-xl font-black text-white">DogWalk <span class="text-indigo-400">PRO</span> 🐕</h1>
+    </div>
+    <button onclick="switchTab('home')" class="text-xs text-indigo-300 font-bold">الرئيسية</button>
   </header>
 
   <main class="max-w-md mx-auto p-4 space-y-6">
 
-    <!-- بنر التكلفة -->
-    <div class="glass p-5 rounded-2xl text-center space-y-2">
-      <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full text-xs font-bold">🛡️ خدمة معتمدة ورعاية 100%</span>
-      <h2 class="text-2xl font-black mt-2">صاحبك الوفي يستاهل أحسن رعاية 🐾</h2>
-      <div class="bg-slate-800/80 p-3 rounded-xl flex justify-between items-center mt-3 border border-slate-700">
-        <span class="text-xs text-slate-300">سعر جولة المشي:</span>
-        <span class="text-xl font-bold text-emerald-400">500 جنيه / ساعة</span>
-      </div>
+    <!-- التبويبات -->
+    <div class="flex bg-slate-800 p-1 rounded-xl text-xs font-bold text-center">
+      <button onclick="switchTab('home')" id="tabHome" class="flex-1 py-2 rounded-lg bg-indigo-600 text-white">الرئيسية والحجز</button>
+      <button onclick="switchTab('captain')" id="tabCaptain" class="flex-1 py-2 rounded-lg text-slate-400">انضم ككابتن</button>
     </div>
 
-    <!-- حجز جولة جديدة -->
-    <div class="glass p-5 rounded-2xl space-y-3">
-      <h3 class="font-bold text-indigo-300 text-sm">📝 احجز جولة جديدة لكلبك</h3>
-      
-      <input type="text" id="cName" placeholder="اسمك بالكامل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-      
-      <div class="flex gap-2">
-        <input type="tel" id="cPhone" placeholder="رقم الموبايل (01xxxxxxxxx)" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-        <button onclick="sendOTP()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 rounded-xl font-bold shrink-0">إرسال كود SMS</button>
+    <!-- قسم الحجز الرئيسي -->
+    <div id="sectionHome" class="space-y-6">
+      <div class="glass p-5 rounded-2xl text-center space-y-2">
+        <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full text-xs font-bold">🛡️ خدمة معتمدة ورعاية 100%</span>
+        <h2 class="text-2xl font-black mt-2">صاحبك الوفي يستاهل أحسن رعاية 🐾</h2>
+        <div class="bg-slate-800/80 p-3 rounded-xl flex justify-between items-center mt-3 border border-slate-700">
+          <span class="text-xs text-slate-300">سعر جولة المشي:</span>
+          <span class="text-xl font-bold text-emerald-400">500 جنيه / ساعة</span>
+        </div>
       </div>
 
-      <div id="otpBox" class="hidden bg-indigo-950/90 p-3 rounded-xl border border-indigo-700 space-y-2">
-        <p class="text-xs text-indigo-200 font-bold">أدخل رمز الأمان المرسل لرقمك:</p>
+      <div class="glass p-5 rounded-2xl space-y-3">
+        <h3 class="font-bold text-indigo-300 text-sm">📝 احجز جولة جديدة لكلبك</h3>
+        <input type="text" id="cName" placeholder="اسمك بالكامل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
+        
         <div class="flex gap-2">
-          <input type="text" id="otpInput" placeholder="الرمز" class="w-full bg-slate-800 p-2 text-center text-xs font-bold rounded-lg text-white">
-          <button onclick="verifyOTP()" class="bg-emerald-600 text-white text-xs px-3 rounded-lg font-bold">تأكيد</button>
+          <input type="tel" id="cPhone" placeholder="رقم الموبايل (01xxxxxxxxx)" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
+          <button onclick="sendOTP()" class="bg-indigo-600 text-white text-xs px-3 rounded-xl font-bold shrink-0">كود SMS</button>
         </div>
-      </div>
 
-      <input type="text" id="dogInfo" placeholder="اسم وسلالة الكلب" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-      <textarea id="cAddr" placeholder="العنوان بالتفصيل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white h-16"></textarea>
-
-      <!-- تفاصيل فودافون كاش -->
-      <div class="bg-emerald-950/60 border border-emerald-600/40 p-3 rounded-xl text-xs space-y-1">
-        <p class="font-bold text-emerald-300">💳 بيانات الدفع والتحويل:</p>
-        <p class="text-slate-300">فودافون كاش أو InstaPay على الرقم الرسمي:</p>
-        <div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-700">
-          <b class="text-emerald-400 font-mono text-sm">01030145357</b>
-          <button onclick="navigator.clipboard.writeText('01030145357'); alert('تم نسخ الرقم بنجاح!');" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded font-bold">نسخ الرقم</button>
+        <div id="otpBox" class="hidden bg-indigo-950 p-3 rounded-xl border border-indigo-700 space-y-2">
+          <p class="text-xs text-indigo-200">أدخل رمز الأمان:</p>
+          <div class="flex gap-2">
+            <input type="text" id="otpInput" placeholder="الرمز" class="w-full bg-slate-800 p-2 text-center text-xs font-bold rounded-lg text-white">
+            <button onclick="verifyOTP()" class="bg-emerald-600 text-white text-xs px-3 rounded-lg font-bold">تأكيد</button>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label class="text-[10px] text-slate-400 block mb-1">إرفاق إيصال التحويل / سكرين شوت (اختياري):</label>
-        <input type="file" id="payReceipt" accept="image/*" class="text-xs text-slate-400">
-      </div>
+        <input type="text" id="dogInfo" placeholder="اسم وسلالة الكلب" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
+        <textarea id="cAddr" placeholder="العنوان بالتفصيل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white h-16"></textarea>
 
-      <button onclick="submitBooking()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold p-3 rounded-xl text-xs text-white">تأكيد وإرسال الطلب</button>
-    </div>
-
-    <!-- آراء العملاء والصور المبهجة (Amazon Style) -->
-    <div class="glass p-5 rounded-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="font-bold text-amber-400 text-sm">⭐ آراء وتجارب العملاء بالصور</h3>
-        <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">4.9 / 5</span>
-      </div>
-
-      <div id="reviewsList" class="space-y-3 max-h-80 overflow-y-auto"></div>
-
-      <!-- إضافة تقييم وصورة جديدة -->
-      <div class="pt-3 border-t border-slate-700 space-y-2">
-        <h4 class="text-xs font-bold text-indigo-300">شاركونا تجربتكم وصورة الكلب 📸</h4>
-        <input type="text" id="rName" placeholder="اسمك الكريم" class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white">
-        <textarea id="rText" placeholder="رأيك في الخدمة ومواعيد الكابتن..." class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white h-14"></textarea>
-        <div class="grid grid-cols-2 gap-2">
-          <input type="file" id="rPhoto" accept="image/*" class="text-[10px] text-slate-400">
-          <select id="rStars" class="bg-slate-800 border border-slate-700 p-1.5 rounded-xl text-xs text-white">
-            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-            <option value="4">⭐⭐⭐⭐ (4/5)</option>
-          </select>
+        <div class="bg-emerald-950/60 border border-emerald-600/40 p-3 rounded-xl text-xs space-y-1">
+          <p class="font-bold text-emerald-300">💳 بيانات الدفع والتحويل:</p>
+          <p class="text-slate-300">فودافون كاش أو InstaPay على الرقم:</p>
+          <div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-700">
+            <b class="text-emerald-400 font-mono text-sm">01030145357</b>
+            <button onclick="navigator.clipboard.writeText('01030145357'); alert('تم نسخ الرقم!');" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded font-bold">نسخ الرقم</button>
+          </div>
         </div>
-        <button onclick="addReview()" class="w-full bg-indigo-600 hover:bg-indigo-500 p-2.5 rounded-xl text-xs font-bold text-white">إضافة التقييم والصورة</button>
+
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-1">إرفاق إيصال التحويل / سكرين شوت:</label>
+          <input type="file" id="payReceipt" accept="image/*" class="text-xs text-slate-400">
+        </div>
+
+        <button onclick="submitBooking()" class="w-full bg-emerald-600 font-bold p-3 rounded-xl text-xs text-white">تأكيد وإرسال الطلب</button>
+      </div>
+
+      <!-- آراء العملاء -->
+      <div class="glass p-5 rounded-2xl space-y-4">
+        <h3 class="font-bold text-amber-400 text-sm">⭐ آراء وتجارب العملاء</h3>
+        <div id="reviewsList" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- انضمام الكباتن -->
-    <div class="glass p-5 rounded-2xl space-y-3">
-      <h3 class="font-bold text-indigo-300 text-sm">🚶‍♂️ الانضمام لفريق الكباتن والمشاة</h3>
+    <!-- قسم انضمام الكباتن -->
+    <div id="sectionCaptain" class="hidden glass p-5 rounded-2xl space-y-3">
+      <h3 class="font-bold text-indigo-300 text-sm">🚶‍♂️ تسجيل بيانات كابتن جديد</h3>
       <input type="text" id="capName" placeholder="الاسم رباعي" class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white">
       <input type="tel" id="capPhone" placeholder="رقم الموبايل" class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white">
-      <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400">
-        <div>صورة شخصية:<input type="file" id="capPic" accept="image/*"></div>
-        <div>الفيش والجنائي:<input type="file" id="capCrim" accept="image/*"></div>
+      
+      <div class="space-y-2 text-xs text-slate-300">
+        <label class="block">صورة شخصية:<input type="file" id="capPic" accept="image/*" class="w-full mt-1 text-[10px]"></label>
+        <label class="block">صورة البطاقة (وجه):<input type="file" id="capIdF" accept="image/*" class="w-full mt-1 text-[10px]"></label>
+        <label class="block">صورة البطاقة (ظهر):<input type="file" id="capIdB" accept="image/*" class="w-full mt-1 text-[10px]"></label>
+        <label class="block">صحيفة الفيش والجنائي:<input type="file" id="capCrim" accept="image/*" class="w-full mt-1 text-[10px]"></label>
       </div>
-      <button onclick="submitCaptain()" class="w-full bg-slate-700 hover:bg-slate-600 p-2.5 rounded-xl text-xs font-bold text-white">إرسال بيانات الكابتن</button>
+
+      <button onclick="submitCaptain()" class="w-full bg-indigo-600 font-bold p-3 rounded-xl text-xs text-white">إرسال المستندات للإدارة</button>
     </div>
 
   </main>
 
-  <!-- نافذة لوحة الإدارة المحمية برمز 214204 -->
+  <!-- لوحة الإدارة المحمية -->
   <div id="adminModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-    <div class="glass w-full max-w-md p-5 rounded-2xl space-y-4 text-xs">
+    <div class="glass w-full max-w-md p-5 rounded-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-700 pb-2">
         <h3 class="font-bold text-indigo-300">لوحة الإدارة المحمية 🔒</h3>
         <button onclick="closeAdminModal()" class="text-slate-400 font-bold">✕</button>
       </div>
 
       <div id="adminAuthBox" class="space-y-2">
-        <p class="text-slate-300">أدخل الرمز السري للإدارة (214204):</p>
-        <input type="password" id="adminPass" placeholder="رمز الدخول" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-center text-white font-mono tracking-widest">
-        <button onclick="checkAdminPass()" class="w-full bg-indigo-600 p-2.5 rounded-xl font-bold text-white">دخول اللوحة</button>
+        <p class="text-slate-300">أدخل الرمز السري (214204):</p>
+        <input type="password" id="adminPass" placeholder="رمز الدخول" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-center text-white font-mono">
+        <button onclick="checkAdminPass()" class="w-full bg-indigo-600 p-2.5 rounded-xl font-bold text-white">دخول</button>
       </div>
 
-      <div id="adminContent" class="hidden space-y-3 max-h-80 overflow-y-auto">
-        <h4 class="font-bold text-emerald-400">طلبات الحجز الواردة:</h4>
-        <div id="adminOrders" class="space-y-2"></div>
+      <div id="adminContent" class="hidden space-y-4">
+        <div>
+          <h4 class="font-bold text-emerald-400 mb-2">طلبات الحجز وإيصالات التحويل:</h4>
+          <div id="adminOrders" class="space-y-2"></div>
+        </div>
+        <hr class="border-slate-700">
+        <div>
+          <h4 class="font-bold text-indigo-400 mb-2">طلبات ومستندات الكباتن الجدد:</h4>
+          <div id="adminCaptains" class="space-y-2"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    var generatedOTP = "";
-    var isVerified = false;
+    var generatedOTP = "", isVerified = false;
 
-    // التقييمات الجاهزة المبهجة المدمجة
     var defaultReviews = [
-      { name: "أحمد فتحي", comment: "خدمة ممتازة جداً! الكابتن كان ملتزم بالموعد بالظبط والكلب كان سعيد ومبسوط جداً بعد الجولة.", stars: 5, date: "2026/10/20", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=400&auto=format&fit=crop" },
-      { name: "سارة محمود", comment: "أهم حاجة عندي الأمان، والصراحة الكابتن كان محترف جداً وبعتلي صورة الكلب أثناء المشي طمني عليه.", stars: 5, date: "2026/10/19", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=400&auto=format&fit=crop" },
-      { name: "محمود حسن", comment: "تجربة ممتازة وسعر 500 جنيه مناسب جداً مقابل الاحترافية ونظافة التعامل.", stars: 5, date: "2026/10/18", img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?q=80&w=400&auto=format&fit=crop" },
-      { name: "نورهان علي", comment: "بصراحة معاملة راقية جداً والكلب اتعود على الكابتن من أول مرة. شكراً لكم!", stars: 5, date: "2026/10/17", img: "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=400&auto=format&fit=crop" }
+      { name: "أحمد فتحي", comment: "خدمة ممتازة جداً والكابتن كان ملتزم بالموعد!", stars: 5, date: "2026/10/20" },
+      { name: "سارة محمود", comment: "أمان واحترافية عالية جداً، شكراً لكم.", stars: 5, date: "2026/10/19" }
     ];
 
-    function getReviews() {
-      var saved = localStorage.getItem('dw_reviews_final');
-      return saved ? JSON.parse(saved) : defaultReviews;
-    }
+    function getReviews() { var s = localStorage.getItem('dw_rev_v4'); return s ? JSON.parse(s) : defaultReviews; }
+    function getOrders() { var s = localStorage.getItem('dw_ord_v4'); return s ? JSON.parse(s) : []; }
+    function getCaptains() { var s = localStorage.getItem('dw_caps_v4'); return s ? JSON.parse(s) : []; }
 
-    function getOrders() {
-      var saved = localStorage.getItem('dw_orders_final');
-      return saved ? JSON.parse(saved) : [];
-    }
+    window.onload = function() { renderReviews(); };
 
-    window.onload = function() {
-      renderReviews();
-    };
+    function switchTab(tab) {
+      if(tab === 'home') {
+        document.getElementById('sectionHome').classList.remove('hidden');
+        document.getElementById('sectionCaptain').classList.add('hidden');
+        document.getElementById('tabHome').className = 'flex-1 py-2 rounded-lg bg-indigo-600 text-white';
+        document.getElementById('tabCaptain').className = 'flex-1 py-2 rounded-lg text-slate-400';
+      } else {
+        document.getElementById('sectionHome').classList.add('hidden');
+        document.getElementById('sectionCaptain').classList.remove('hidden');
+        document.getElementById('tabCaptain').className = 'flex-1 py-2 rounded-lg bg-indigo-600 text-white';
+        document.getElementById('tabHome').className = 'flex-1 py-2 rounded-lg text-slate-400';
+      }
+    }
 
     function sendOTP() {
       var phone = document.getElementById('cPhone').value.trim();
-      if(!phone || phone.length < 10) { alert("يرجى كتابة رقم الموبايل أولاً!"); return; }
+      if(!phone || phone.length < 10) { alert("أدخل رقم الموبايل أولاً!"); return; }
       generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      alert("[رسالة أمان SMS]: كود التحقق الخاص بك هو: " + generatedOTP);
+      alert("كود التحقق الخاص بك هو: " + generatedOTP);
       document.getElementById('otpBox').classList.remove('hidden');
     }
 
     function verifyOTP() {
-      var input = document.getElementById('otpInput').value.trim();
-      if(input === generatedOTP && generatedOTP !== "") {
+      if(document.getElementById('otpInput').value.trim() === generatedOTP) {
         isVerified = true;
-        alert("✓ تم تأكيد ملكية رقم الهاتف بنجاح!");
+        alert("✓ تم التحقق بنجاح!");
         document.getElementById('otpBox').classList.add('hidden');
-      } else {
-        alert("رمز التحقق غير صحيح!");
-      }
+      } else { alert("رمز غير صحيح!"); }
     }
 
     function submitBooking() {
-      if(!isVerified) { alert("يرجى الضغط على (إرسال كود SMS) وتأكيد رقمك أولاً!"); return; }
+      if(!isVerified) { alert("يرجى تأكيد رقم الموبايل بكود الـ SMS أولاً!"); return; }
       var name = document.getElementById('cName').value.trim();
       var phone = document.getElementById('cPhone').value.trim();
       var dog = document.getElementById('dogInfo').value.trim();
       var addr = document.getElementById('cAddr').value.trim();
+      var file = document.getElementById('payReceipt').files[0];
 
-      if(!name || !dog || !addr) { alert("يرجى إكمال جميع البيانات المطلوبة!"); return; }
+      if(!name || !dog || !addr) { alert("أكمل البيانات المطلوبة!"); return; }
 
-      var orders = getOrders();
-      orders.unshift({ id: 'DW-' + Date.now().toString().slice(-5), name: name, phone: phone, dog: dog, addr: addr, status: 'قيد الانتظار' });
-      localStorage.setItem('dw_orders_final', JSON.stringify(orders));
-
-      alert("تم إرسال طلب الحجز بنجاح! سيتواصل معك الكابتن لتأكيد الموعد.");
-      document.getElementById('cName').value = '';
-      document.getElementById('dogInfo').value = '';
-      document.getElementById('cAddr').value = '';
-      isVerified = false;
-    }
-
-    function renderReviews() {
-      var list = getReviews();
-      var box = document.getElementById('reviewsList');
-      var html = "";
-      for(var i=0; i<list.length; i++) {
-        var r = list[i];
-        html += '<div class="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs space-y-1.5">' +
-                  '<div class="flex justify-between font-bold">' +
-                    '<span class="text-white">' + r.name + '</span>' +
-                    '<span class="text-amber-400">' + '★'.repeat(r.stars) + '</span>' +
-                  '</div>' +
-                  '<p class="text-slate-300">' + r.comment + '</p>' +
-                  (r.img ? '<img src="' + r.img + '" class="w-full h-36 object-cover rounded-lg border border-slate-700 mt-1">' : '') +
-                  '<span class="text-[10px] text-slate-500 block">' + r.date + '</span>' +
-                '</div>';
-      }
-      box.innerHTML = html;
-    }
-
-    function addReview() {
-      var user = document.getElementById('rName').value.trim();
-      var text = document.getElementById('rText').value.trim();
-      var stars = parseInt(document.getElementById('rStars').value);
-      var photoFile = document.getElementById('rPhoto').files[0];
-
-      if(!user || !text) { alert("يرجى إدخال اسمك وتعليقك!"); return; }
-
-      var save = function(imgData) {
-        var list = getReviews();
-        list.unshift({ name: user, comment: text, stars: stars, date: new Date().toLocaleDateString('ar-EG'), img: imgData || '' });
-        localStorage.setItem('dw_reviews_final', JSON.stringify(list));
-        renderReviews();
-        document.getElementById('rName').value = '';
-        document.getElementById('rText').value = '';
-        alert("تم إضافة تقييمك والصورة بنجاح!");
+      var saveOrder = function(img) {
+        var orders = getOrders();
+        orders.unshift({ id: 'DW-' + Date.now().toString().slice(-5), name, phone, dog, addr, receipt: img || '' });
+        localStorage.setItem('dw_ord_v4', JSON.stringify(orders));
+        alert("تم إرسال طلبك بنجاح!");
+        document.getElementById('cName').value = '';
+        document.getElementById('dogInfo').value = '';
+        document.getElementById('cAddr').value = '';
+        isVerified = false;
       };
 
-      if(photoFile) {
+      if(file) {
         var reader = new FileReader();
-        reader.onload = function(e) { save(e.target.result); };
-        reader.readAsDataURL(photoFile);
-      } else {
-        save('');
-      }
+        reader.onload = function(e) { saveOrder(e.target.result); };
+        reader.readAsDataURL(file);
+      } else { saveOrder(''); }
     }
 
     function submitCaptain() {
       var name = document.getElementById('capName').value.trim();
       var phone = document.getElementById('capPhone').value.trim();
-      if(!name || !phone) { alert("يرجى إدخال اسم الكابتن ورقم الموبايل!"); return; }
-      alert("تم إرسال بياناتك للإدارة لمراجعتها وتفعيل حسابك ككابتن!");
+      var pic = document.getElementById('capPic').files[0];
+      var idF = document.getElementById('capIdF').files[0];
+      var idB = document.getElementById('capIdB').files[0];
+      var crim = document.getElementById('capCrim').files[0];
+
+      if(!name || !phone || !pic || !idF || !idB || !crim) { alert("يرجى إدخال البيانات ورفع كافة المستندات المطلوبة!"); return; }
+
+      Promise.all([
+        toBase64(pic), toBase64(idF), toBase64(idB), toBase64(crim)
+      ]).then(function(imgs) {
+        var caps = getCaptains();
+        caps.unshift({ name, phone, pic: imgs[0], idF: imgs[1], idB: imgs[2], crim: imgs[3] });
+        localStorage.setItem('dw_caps_v4', JSON.stringify(caps));
+        alert("تم إرسال مستنداتك للإدارة بنجاح!");
+        document.getElementById('captainRegForm')?.reset();
+      });
+    }
+
+    function toBase64(file) {
+      return new Promise(function(res) {
+        var r = new FileReader();
+        r.onload = function(e) { res(e.target.result); };
+        r.readAsDataURL(file);
+      });
+    }
+
+    function renderReviews() {
+      var list = getReviews(), html = "";
+      for(var i=0; i<list.length; i++) {
+        html += '<div class="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs space-y-1">' +
+                  '<div class="flex justify-between font-bold"><span>' + list[i].name + '</span><span class="text-amber-400">' + '★'.repeat(list[i].stars) + '</span></div>' +
+                  '<p class="text-slate-300">' + list[i].comment + '</p>' +
+                  '<span class="text-[10px] text-slate-500">' + list[i].date + '</span>' +
+                '</div>';
+      }
+      document.getElementById('reviewsList').innerHTML = html;
     }
 
     function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
     function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
 
     function checkAdminPass() {
-      var pass = document.getElementById('adminPass').value.trim();
-      if(pass !== "214204") { alert("رمز الإدارة غير صحيح!"); return; }
+      if(document.getElementById('adminPass').value.trim() !== "214204") { alert("رمز خاطئ!"); return; }
       document.getElementById('adminAuthBox').classList.add('hidden');
       document.getElementById('adminContent').classList.remove('hidden');
-      renderAdminOrders();
+      renderAdminData();
     }
 
-    function renderAdminOrders() {
-      var orders = getOrders();
-      var box = document.getElementById('adminOrders');
-      if(orders.length === 0) {
-        box.innerHTML = '<p class="text-slate-400 text-xs">لا توجد طلبات جارية.</p>';
-        return;
-      }
-      var html = "";
+    function renderAdminData() {
+      var orders = getOrders(), caps = getCaptains();
+      
+      var oHtml = "";
       for(var i=0; i<orders.length; i++) {
-        var o = orders[i];
-        html += '<div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs text-white space-y-1">' +
-                  '<p><b>الطلب:</b> ' + o.id + ' | <b>العميل:</b> ' + o.name + ' (' + o.phone + ')</p>' +
-                  '<p><b>الكلب:</b> ' + o.dog + ' | <b>العنوان:</b> ' + o.addr + '</p>' +
-                '</div>';
+        oHtml += '<div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 space-y-1">' +
+                   '<p><b>الطلب:</b> ' + orders[i].id + ' | <b>العميل:</b> ' + orders[i].name + ' (' + orders[i].phone + ')</p>' +
+                   '<p><b>الكلب والعنوان:</b> ' + orders[i].dog + ' - ' + orders[i].addr + '</p>' +
+                   (orders[i].receipt ? '<a href="' + orders[i].receipt + '" target="_blank" class="text-emerald-400 underline block font-bold">مشاهدة إيصال التحويل (سكرين شوت)</a>' : '<p class="text-slate-400">لا يوجد إيصال مرفق</p>') +
+                 '</div>';
       }
-      box.innerHTML = html;
+      document.getElementById('adminOrders').innerHTML = oHtml || '<p class="text-slate-400">لا توجد طلبات حجز.</p>';
+
+      var cHtml = "";
+      for(var j=0; j<caps.length; j++) {
+        cHtml += '<div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 space-y-2">' +
+                   '<p><b>الكابتن:</b> ' + caps[j].name + ' (' + caps[j].phone + ')</p>' +
+                   '<div class="grid grid-cols-2 gap-1 text-[10px]">' +
+                     '<a href="' + caps[j].pic + '" target="_blank" class="text-indigo-400 underline">الصورة الشخصية</a>' +
+                     '<a href="' + caps[j].crim + '" target="_blank" class="text-indigo-400 underline">الفيش والجنائي</a>' +
+                     '<a href="' + caps[j].idF + '" target="_blank" class="text-indigo-400 underline">البطاقة (وش)</a>' +
+                     '<a href="' + caps[j].idB + '" target="_blank" class="text-indigo-400 underline">البطاقة (ظهر)</a>' +
+                   '</div>' +
+                 '</div>';
+      }
+      document.getElementById('adminCaptains').innerHTML = cHtml || '<p class="text-slate-400">لا توجد طلبات كباتن مسجلة.</p>';
     }
   </script>
 </body>
