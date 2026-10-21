@@ -23,8 +23,8 @@
     .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.total{display:flex;align-items:center;justify-content:space-between;background:var(--mint);border-radius:13px;padding:13px;margin:14px 0}.total strong{font-size:21px;color:var(--green)}
     .primary,.secondary,.danger{width:100%;border:0;border-radius:13px;padding:13px;font-weight:800}.primary{background:var(--green);color:white}.secondary{background:var(--mint);color:var(--green);margin-top:9px}.danger{background:#fff0ed;color:#a73525;margin-top:8px}
     .service-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.service{background:#f7faf8;border:1px solid var(--line);border-radius:14px;padding:13px}.service .emoji{font-size:25px}.service b{display:block;margin-top:5px}.service span{font-size:12px;color:var(--muted)}
-    .booking{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}.booking-top{display:flex;justify-content:space-between;gap:10px}.status{font-size:11px;font-weight:800;border-radius:99px;padding:4px 8px;background:#fff0d8;color:#8b5a08;height:max-content}.status.accepted{background:#e0f5e9;color:#176b45}.status.rejected{background:#ffebe8;color:#a73525}.booking p{margin:7px 0;color:var(--muted);font-size:13px}
-    .empty{text-align:center;padding:25px 10px;color:var(--muted)}.empty div{font-size:35px}.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px max(15px,calc((100vw - 730px)/2));display:flex;justify-content:space-around;z-index:5}.bottom button{background:none;border:0;color:var(--muted);font-size:12px;font-weight:700}.bottom button span{display:block;font-size:20px}.bottom button.active{color:var(--green)}
+    .booking{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}.booking-top{display:flex;justify-content:space-between;gap:10px}.status{font-size:11px;font-weight:800;border-radius:99px;padding:4px 8px;background:#fff0d8;color:#8b5a08;height:max-content}.booking p{margin:7px 0;color:var(--muted);font-size:13px}
+    .empty{text-align:center;padding:25px 10px;color:var(--muted)}.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px max(15px,calc((100vw - 730px)/2));display:flex;justify-content:space-around;z-index:5}.bottom button{background:none;border:0;color:var(--muted);font-size:12px;font-weight:700}.bottom button span{display:block;font-size:20px}.bottom button.active{color:var(--green)}
     .hidden{display:none!important}.toast{position:fixed;bottom:78px;left:15px;right:15px;max-width:500px;margin:auto;background:#10251f;color:white;padding:13px 16px;border-radius:13px;z-index:50;box-shadow:0 8px 25px #0002}
   </style>
 </head>
@@ -190,8 +190,8 @@
   const $=id=>document.getElementById(id);
   let bookings=[], captains=[], toastTimer;
 
-  try{ bookings = JSON.parse(localStorage.getItem(KEY)|CustomEvent|'[]'); }catch(e){ bookings=[]; }
-  try{ captains = JSON.parse(localStorage.getItem(CAPKEY)||'[]'); }catch(e){ captains=[]; }
+  try{ bookings = JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ bookings=[]; }
+  try{ captains = JSON.parse(localStorage.getItem(CAPKEY) || '[]'); }catch(e){ captains=[]; }
 
   const today = new Date().toISOString().slice(0,10);
   if($('date'))$('date').value = today;
@@ -217,7 +217,6 @@
     });
   }
 
-  // حفظ الحجز مع السكرين شوت
   $('bookingForm').addEventListener('submit', (e)=>{
     e.preventDefault();
     const fileIn = $('payReceipt');
@@ -264,7 +263,6 @@
     `).join('');
   }
 
-  // تسجيل الكابتن
   $('captainRegForm').addEventListener('submit', (e)=>{
     e.preventDefault();
     const read = (file) => new Promise(r => { const rd = new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(file); });
@@ -279,5 +277,62 @@
         name: $('capName').value.trim(),
         phone: $('capPhone').value.trim(),
         exp: $('capExp').value.trim(),
-        avatar
-  
+        avatar: av, idFront: idF, idBack: idB, criminal: crim
+      };
+      captains.unshift(cap);
+      localStorage.setItem(CAPKEY, JSON.stringify(captains));
+      $('captainRegForm').reset();
+      notify('تم إرسال مستنداتك للإدارة لمراجعتها وتفعيل حسابك!');
+    });
+  });
+
+  function resetAdminLock() {
+    $('adminLockBox').classList.remove('hidden');
+    $('adminContent').classList.add('hidden');$('adminPassInput').value = '';
+  }
+
+  window.unlockAdmin = function() {
+    const pass = $('adminPassInput').value.trim();
+    if(pass !== "214204") return alert("رمز الإدارة السري غير صحيح!");
+    $('adminLockBox').classList.add('hidden');$('adminContent').classList.remove('hidden');
+    renderAdminData();
+  };
+
+  function renderAdminData() {
+    const ob = $('adminOrdersList');
+    ob.innerHTML = bookings.length ? bookings.map(b => `
+      <div class="p-2 border border-emerald-100 rounded-xl mb-2 text-xs bg-slate-50">
+        <p><b>العميل:</b> ${b.customer} (${b.phone})</p>
+        <p><b>الكلب والعنوان:</b> ${b.dog} - ${b.address}</p>
+        <p><b>السعر:</b> ${b.total} | <b>الحالة:</b> ${b.status}</p>
+        ${b.receipt ? `<a href="${b.receipt}" target="_blank" class="text-emerald-700 underline font-bold">مشاهدة سكرين شوت التحويل</a>` : ''}
+      </div>
+    `).join('') : '<p class="text-xs text-slate-400">لا توجد طلبات حجز.</p>';
+
+    const cb = $('adminCaptainsList');
+    cb.innerHTML = captains.length ? captains.map(c => `
+      <div class="p-2 border border-indigo-100 rounded-xl mb-2 text-xs bg-slate-50 space-y-1">
+        <p><b>الكابتن:</b> ${c.name} (${c.phone})</p>
+        <p><b>الخبرة:</b> ${c.exp || 'لا يوجد'}</p>
+        <div class="grid grid-cols-2 gap-1 text-[10px]">
+          <a href="${c.avatar}" target="_blank" class="text-indigo-600 underline">الصورة الشخصية</a>
+          <a href="${c.criminal}" target="_blank" class="text-indigo-600 underline">الفيش والجنائي</a>
+          <a href="${c.idFront}" target="_blank" class="text-indigo-600 underline">البطاقة (وش)</a>
+          <a href="${c.idBack}" target="_blank" class="text-indigo-600 underline">البطاقة (ظهر)</a>
+        </div>
+      </div>
+    `).join('') : '<p class="text-xs text-slate-400">لا يوجد كباتن مسجلين.</p>';
+  }
+
+  $('saveRoleBtn').addEventListener('click', ()=>{
+    const role = $('roleSelect').value;
+    if(role === 'captain') page('captain');
+    else if(role === 'admin') page('admin');
+    else page('home');
+    notify('تم الانتقال للقسم المخصص!');
+  });
+
+})();
+</script>
+</body>
+</html>
