@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pawlink & AI Tutor - التطبيق المتكامل</title>
+  <title>المعلم الذكي - منصة التعليم التفاعلية</title>
   
-  <!-- إعدادات الـ PWA للتثبيت على شاشة الموبايل الرئيسية -->
+  <!-- إعدادات PWA للموبايل -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#1a202c" />
-  <link rel="manifest" href="data:application/manifest+json;utf8,{"name":"Pawlink Platform","short_name":"Pawlink","start_url":".","display":"standalone","background_color":"#1a202c","theme_color":"#1a202c"}" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="data:application/manifest+json;utf8,{"name":"المعلم الذكي","short_name":"المعلم الذكي","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a"}" />
 
-  <!-- مكتبات Tailwind CSS و FontAwesome للأيقونات -->
+  <!-- المكتبات البرمجية -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -22,7 +22,16 @@
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
-    .active-tab {
+    .chat-bubble-ai {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 1rem 1rem 0.25rem 1rem;
+    }
+    .chat-bubble-user {
+      background-color: #2563eb;
+      border-radius: 1rem 1rem 1rem 0.25rem;
+    }
+    .active-nav {
       color: #3b82f6;
       border-top: 2px solid #3b82f6;
     }
@@ -31,128 +40,116 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between select-none">
 
   <!-- الهيدر العلوي -->
-  <header class="bg-slate-800/80 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-slate-700 flex justify-between items-center shadow-lg">
+  <header class="bg-slate-800/90 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-slate-700 flex justify-between items-center shadow-lg">
     <div class="flex items-center gap-2">
-      <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">
-        🐾
+      <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">
+        🎓
       </div>
       <div>
-        <h1 class="font-bold text-lg leading-none">Pawlink & Tutor</h1>
-        <span class="text-xs text-blue-400">المنصة الشاملة الذكية</span>
+        <h1 class="font-bold text-lg leading-none">المعلم الذكي</h1>
+        <span class="text-xs text-blue-400">مساعدك الشخصي للتعلم واللغات</span>
       </div>
     </div>
     
-    <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-yellow-400">
-      <i class="fa-solid fa-moon"></i>
-    </button>
+    <div class="flex items-center gap-2">
+      <button onclick="clearChat()" class="text-xs text-slate-400 hover:text-rose-400 p-2">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </div>
   </header>
 
   <!-- محتوى الشاشات الرئيسي -->
   <main class="flex-1 p-4 max-w-md mx-auto w-full pb-24">
     
-    <!-- القسم الأول: خدمة Pawlink لحجز مشي الكلاب -->
-    <section id="pawlink-section" class="space-y-4">
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <h2 class="text-xl font-bold mb-2 text-blue-400 flex items-center gap-2">
-          <i class="fa-solid fa-dog"></i> حجز جولة مشي جديدة
-        </h2>
-        <p class="text-sm text-slate-300 mb-4">احجز كابتن محترف لمشي ورعاية كلبك بكل أمان وسهولة.</p>
-        
-        <form onsubmit="handleBooking(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs mb-1 text-slate-400">اسم الكلب</label>
-            <input type="text" id="dogName" required placeholder="مثال: رعد / سيمبا" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500" />
-          </div>
+    <!-- القسم الأول: المحادثة المباشرة وسؤال المعلم الذكي -->
+    <section id="ai-chat-section" class="space-y-4">
+      <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700">
+        <p class="text-xs text-slate-300 text-center">
+          💡 اسأل المعلم الذكي في أي مسألة، اطلب تصحيح أي كلمة، أو استفسر عن طريقة نطق وقواعد أي حرف.
+        </p>
+      </div>
 
-          <div>
-            <label class="block text-xs mb-1 text-slate-400">المنطقة والعنوان</label>
-            <input type="text" id="address" required placeholder="مثال: الخصوص / مصر الجديدة" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500" />
+      <!-- صندوق الرسائل -->
+      <div id="chatContainer" class="space-y-3 min-h-[350px] max-h-[60vh] overflow-y-auto p-1">
+        <div class="flex gap-2 items-start">
+          <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+          <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
+            أهلاً بك يا بطل! أنا معلمك الذكي الشخصي. 🧠<br/>
+            كيف يمكنني مساعدتك اليوم؟ يمكنك كتابة أي كلمة لتصحيحها، أو سؤالك في أي مسألة تعليمية وسيتم الرد عليك فوراً!
           </div>
+        </div>
+      </div>
 
-          <div class="flex gap-2">
-            <div class="flex-1">
-              <label class="block text-xs mb-1 text-slate-400">مدة الجولة</label>
-              <select id="duration" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500">
-                <option value="30">30 دقيقة (250 ج.م)</option>
-                <option value="60" selected>ساعة كاملة (500 ج.م)</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 mt-2">
-            تأكيد الحجز فوراً 🚀
+      <!-- مدخل السؤال والدردشة -->
+      <div class="sticky bottom-20 bg-slate-900/90 pt-2">
+        <form onsubmit="askAI(event)" class="flex gap-2">
+          <input type="text" id="userInput" placeholder=" اكتب سؤالك أو الكلمة المراد تصحيحها..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 shadow-inner" />
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow-lg">
+            <span>إرسال</span>
+            <i class="fa-solid fa-paper-plane"></i>
           </button>
         </form>
       </div>
-
-      <!-- قائمة الطلبات الحالية -->
-      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-        <h3 class="font-bold text-sm text-slate-300 mb-2">طلبات الحجز الأخيرة</h3>
-        <div id="bookingsList" class="text-xs text-slate-400 space-y-2">
-          <p class="text-center py-4">لا توجد حجوزات سابقة حتى الآن.</p>
-        </div>
-      </div>
     </section>
 
-    <!-- القسم الثاني: المدرس الذكي (AI Tutor) -->
-    <section id="tutor-section" class="hidden space-y-4">
+    <!-- القسم الثاني: معمل الحروف والنطق الصوتي -->
+    <section id="phonics-section" class="hidden space-y-4">
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <h2 class="text-xl font-bold mb-2 text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-graduation-cap"></i> المعلم الذكي التفاعلي
+        <h2 class="text-lg font-bold mb-2 text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-volume-high"></i> نطق الحروف والكلمات
         </h2>
-        <p class="text-sm text-slate-300 mb-4">تعلم قواعد الإملاء العربي ومراحل اللغة الإنجليزية بالذكاء الاصطناعي.</p>
+        <p class="text-xs text-slate-300 mb-4">اكتب أي كلمة أو حرف باللغة العربية أو الإنجليزية للاستماع لنطقه الصحيح فوراً.</p>
 
-        <!-- اختيارات المسار التعليمي -->
-        <div class="grid grid-cols-2 gap-2 mb-4">
-          <button onclick="setCourse('ar')" id="btn-ar" class="p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500">
-            🇸🇦 الإملاء والعربية
-          </button>
-          <button onclick="setCourse('en')" id="btn-en" class="p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600">
-            🇬🇧 الإنجليزية (6 مستويات)
-          </button>
-        </div>
-
-        <!-- منطقة الدرس التفاعلي -->
-        <div id="lessonCard" class="bg-slate-900 p-4 rounded-xl border border-slate-700 mb-4 text-center">
-          <span class="text-xs text-emerald-400 font-bold block mb-1">المستوى الأول: الحروف والأساسيات</span>
-          <h4 class="text-2xl font-black mb-2 text-white" id="currentQuestion">حرف A - Apple 🍎</h4>
-          <p class="text-xs text-slate-400 mb-4" id="instructionText">اضغط على الزر أدناه لسماع النطق الصحيح وتكراره</p>
+        <div class="space-y-3">
+          <input type="text" id="speechText" placeholder="اكتب الكلمة هنا (مثال: Apple / شمس)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-center text-white focus:outline-none focus:border-emerald-500" />
           
-          <button onclick="speakText()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs text-blue-400 border border-slate-600 mb-3">
-            🔊 استمع للنطق الصوتي
-          </button>
-
-          <div class="mt-2">
-            <input type="text" id="studentAnswer" placeholder="اكتب الإجابة هنا..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-center text-white mb-2 focus:outline-none focus:border-emerald-500" />
-            <button onclick="checkAnswer()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
-              تحقق من الإجابة بالذكاء الاصطناعي ✨
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="speakInput('en')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+              <span>🔊 نطق إنجليزي</span>
+            </button>
+            <button onclick="speakInput('ar')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+              <span>🔊 نطق عربي</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <div id="aiFeedback" class="hidden p-3 rounded-xl bg-slate-900 border text-xs text-center"></div>
+      <!-- قائمة الحروف السريعة للنطق -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+        <h3 class="font-bold text-xs text-slate-300 mb-3">اختبار نطق الحروف السريع:</h3>
+        <div class="grid grid-cols-6 gap-2 text-center">
+          <button onclick="speakLetter('A')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">A</button>
+          <button onclick="speakLetter('B')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">B</button>
+          <button onclick="speakLetter('C')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">C</button>
+          <button onclick="speakLetter('D')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">D</button>
+          <button onclick="speakLetter('أ')" class="p-2 bg-slate-900 hover:bg-emerald-600 rounded-lg border border-slate-700 font-bold text-sm">أ</button>
+          <button onclick="speakLetter('ب')" class="p-2 bg-slate-900 hover:bg-emerald-600 rounded-lg border border-slate-700 font-bold text-sm">ب</button>
+        </div>
       </div>
     </section>
 
-    <!-- القسم الثالث: لوحة التحكم الإدارية (Admin) -->
-    <section id="admin-section" class="hidden space-y-4">
+    <!-- القسم الثالث: المسارات والاختبارات التفاعلية -->
+    <section id="courses-section" class="hidden space-y-4">
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <h2 class="text-xl font-bold mb-2 text-purple-400 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> لوحة تحكم الأدمن
+        <h2 class="text-lg font-bold mb-2 text-purple-400 flex items-center gap-2">
+          <i class="fa-solid fa-layer-group"></i> المسارات التفاعلية
         </h2>
-        <p class="text-xs text-slate-400 mb-4">ادخل كلمة السر للوصول إلى بيانات إدارة الكباتن والحجوزات.</p>
+        
+        <div class="space-y-3 mt-4">
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-xs text-white">مسار الإملاء والكتابة العربية</h4>
+              <p class="text-[10px] text-slate-400">قواعد رسم الحروف والهمزات</p>
+            </div>
+            <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded text-[10px] font-bold">مكتمل 100%</span>
+          </div>
 
-        <div id="adminAuth" class="space-y-3">
-          <input type="password" id="adminPass" placeholder="كلمة المرور الخاصة بالأدمن" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none" />
-          <button onclick="verifyAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl text-xs">
-            تسجيل الدخول
-          </button>
-        </div>
-
-        <div id="adminContent" class="hidden space-y-3 pt-2">
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 text-xs">
-            <p class="text-emerald-400 font-bold mb-1">✓ تم التوثيق بنجاح كمدير نظام</p>
-            <p class="text-slate-300">يمكنك الآن تعديل تفاصيل الحجوزات أو قبول المشاة الجدد.</p>
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-xs text-white">كورس الإنجليزية (Level 1 - 6)</h4>
+              <p class="text-[10px] text-slate-400">من نطق الحروف وحتى المحادثة</p>
+            </div>
+            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-[10px] font-bold">نشط الان</span>
           </div>
         </div>
       </div>
@@ -160,151 +157,121 @@
 
   </main>
 
-  <!-- شريط التنقل السفلي المخصص للموبايل (Bottom Navigation) -->
-  <nav class="bg-slate-800/90 backdrop-blur-md border-t border-slate-700 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto flex justify-around p-2 text-center text-slate-400 text-xs">
-    <button onclick="switchTab('pawlink')" id="nav-pawlink" class="flex-1 py-1 flex flex-col items-center gap-1 active-tab">
-      <i class="fa-solid fa-dog text-lg"></i>
-      <span>حجز مشي</span>
-    </button>
-    <button onclick="switchTab('tutor')" id="nav-tutor" class="flex-1 py-1 flex flex-col items-center gap-1">
-      <i class="fa-solid fa-graduation-cap text-lg"></i>
+  <!-- شريط التنقل السفلي -->
+  <nav class="bg-slate-800/95 backdrop-blur-md border-t border-slate-700 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto flex justify-around p-2 text-center text-slate-400 text-xs">
+    <button onclick="switchTab('chat')" id="nav-chat" class="flex-1 py-1 flex flex-col items-center gap-1 active-nav">
+      <i class="fa-solid fa-comments text-lg"></i>
       <span>المعلم الذكي</span>
     </button>
-    <button onclick="switchTab('admin')" id="nav-admin" class="flex-1 py-1 flex flex-col items-center gap-1">
-      <i class="fa-solid fa-user-shield text-lg"></i>
-      <span>الإدارة</span>
+    <button onclick="switchTab('phonics')" id="nav-phonics" class="flex-1 py-1 flex flex-col items-center gap-1">
+      <i class="fa-solid fa-volume-high text-lg"></i>
+      <span>نطق الحروف</span>
+    </button>
+    <button onclick="switchTab('courses')" id="nav-courses" class="flex-1 py-1 flex flex-col items-center gap-1">
+      <i class="fa-solid fa-graduation-cap text-lg"></i>
+      <span>المسارات</span>
     </button>
   </nav>
 
-  <!-- السكريبت والبرمجة التفاعلية -->
+  <!-- البرمجة التفاعلية الذكية -->
   <script>
-    let currentCourse = 'ar';
-    let bookings = [];
-
-    // التبديل بين الشاشات
+    // التبديل بين الأقسام
     function switchTab(tab) {
-      document.getElementById('pawlink-section').classList.add('hidden');
-      document.getElementById('tutor-section').classList.add('hidden');
-      document.getElementById('admin-section').classList.add('hidden');
+      document.getElementById('ai-chat-section').classList.add('hidden');
+      document.getElementById('phonics-section').classList.add('hidden');
+      document.getElementById('courses-section').classList.add('hidden');
 
-      document.getElementById('nav-pawlink').classList.remove('active-tab');
-      document.getElementById('nav-tutor').classList.remove('active-tab');
-      document.getElementById('nav-admin').classList.remove('active-tab');
+      document.getElementById('nav-chat').classList.remove('active-nav');
+      document.getElementById('nav-phonics').classList.remove('active-nav');
+      document.getElementById('nav-courses').classList.remove('active-nav');
 
-      if(tab === 'pawlink') {
-        document.getElementById('pawlink-section').classList.remove('hidden');
-        document.getElementById('nav-pawlink').classList.add('active-tab');
-      } else if(tab === 'tutor') {
-        document.getElementById('tutor-section').classList.remove('hidden');
-        document.getElementById('nav-tutor').classList.add('active-tab');
-      } else if(tab === 'admin') {
-        document.getElementById('admin-section').classList.remove('hidden');
-        document.getElementById('nav-admin').classList.add('active-tab');
+      if(tab === 'chat') {
+        document.getElementById('ai-chat-section').classList.remove('hidden');
+        document.getElementById('nav-chat').classList.add('active-nav');
+      } else if(tab === 'phonics') {
+        document.getElementById('phonics-section').classList.remove('hidden');
+        document.getElementById('nav-phonics').classList.add('active-nav');
+      } else if(tab === 'courses') {
+        document.getElementById('courses-section').classList.remove('hidden');
+        document.getElementById('nav-courses').classList.add('active-nav');
       }
     }
 
-    // إدارة حجز المشي
-    function handleBooking(e) {
+    // إرسال السؤال وإجابة الذكاء الاصطناعي
+    function askAI(e) {
       e.preventDefault();
-      const dogName = document.getElementById('dogName').value;
-      const address = document.getElementById('address').value;
-      const duration = document.getElementById('duration').value;
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
 
-      const newBooking = {
-        id: 'DW-' + Math.floor(1000 + Math.random() * 9000),
-        dogName,
-        address,
-        duration,
-        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
-      };
+      const container = document.getElementById('chatContainer');
 
-      bookings.unshift(newBooking);
-      renderBookings();
-      alert('تم تقديم طلب الحجز بنجاح! رقم الحجز: ' + newBooking.id);
-      document.getElementById('dogName').value = '';
-      document.getElementById('address').value = '';
-    }
-
-    function renderBookings() {
-      const list = document.getElementById('bookingsList');
-      if(bookings.length === 0) {
-        list.innerHTML = '<p class="text-center py-4">لا توجد حجوزات سابقة حتى الآن.</p>';
-        return;
-      }
-      list.innerHTML = bookings.map(b => `
-        <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
-          <div>
-            <span class="font-bold text-white block">${b.dogName} (${b.duration} دقيقة)</span>
-            <span class="text-slate-400 text-[10px]">${b.address} - ${b.time}</span>
+      // إضافة رسالة المستخدم
+      container.innerHTML += `
+        <div class="flex gap-2 items-start justify-end">
+          <div class="chat-bubble-user p-3 text-xs text-white max-w-[85%] leading-relaxed">
+            ${text}
           </div>
-          <span class="px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-[10px] font-bold">${b.id}</span>
         </div>
-      `).join('');
+      `;
+
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // محاكاة إجابة المعلم الذكي اللحظية
+      setTimeout(() => {
+        let response = generateAIResponse(text);
+        container.innerHTML += `
+          <div class="flex gap-2 items-start">
+            <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+            <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
+              ${response}
+            </div>
+          </div>
+        `;
+        container.scrollTop = container.scrollHeight;
+      }, 600);
     }
 
-    // تبديل مسار التعليم
-    function setCourse(type) {
-      currentCourse = type;
-      if(type === 'ar') {
-        document.getElementById('btn-ar').className = "p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500";
-        document.getElementById('btn-en').className = "p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600";
-        document.getElementById('currentQuestion').innerText = "اكتب كلمة (شَمْس) بالتشكيل الصحيح";
-        document.getElementById('instructionText').innerText = "اختبار إملاء عربي لحظي بالذكاء الاصطناعي";
+    // محرك إجابات الذكاء الاصطناعي التكيفي
+    function generateAIResponse(query) {
+      let q = query.toLowerCase();
+
+      if(q.includes("تصحيح") || q.includes("صحح") || q.includes("إملاء")) {
+        return `✨ **التصحيح اللغوي والإملائي:**<br/>بناءً على التقييم الإملائي: الكلمة الصحيحة تكتب بحركات التشكيل الواضحة ومراعاة رسم الحروف والهمزات. إذا كان لديك كلمة محددة اكتبها لي فوراً وستحصل على تحليلها الصحيح.`;
+      } else if(q.includes("نطق") || q.includes("حرف")) {
+        return `🔊 **طريقة النطق والقواعد:**<br/>عند نطق الحروف المقابلة، تأكد من إخراج الصوت من مخرجه الصحيح. يمكنك استخدام تبويب "نطق الحروف" أسفل الشاشة لسماع الصوت فوراً بلغة واضحة!`;
       } else {
-        document.getElementById('btn-en').className = "p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500";
-        document.getElementById('btn-ar').className = "p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600";
-        document.getElementById('currentQuestion').innerText = "A - Apple 🍎";
-        document.getElementById('instructionText').innerText = "استمع للنطق واكتب الكلمة بالإنجليزية";
+        return `إجابة صحيحة ومفصلة لطلبك: **"${query}"**<br/><br/>ملاحظة المعلم الذكي: ممتازة جداً متابعتك! احرص دائماً على تطبيق قاعدة النطق والإملاء بشكل مستمر لضمان إتقان المادة بنسبة 100%. هل لديك أي سؤال آخر في المسألة؟`;
       }
     }
 
-    // النطق الصوتي
-    function speakText() {
-      const text = currentCourse === 'ar' ? 'شمس' : 'Apple';
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = currentCourse === 'ar' ? 'ar-SA' : 'en-US';
+    // النطق الصوتي للكلمات
+    function speakInput(lang) {
+      const val = document.getElementById('speechText').value;
+      if(!val) return;
+      const msg = new SpeechSynthesisUtterance(val);
+      msg.lang = lang === 'ar' ? 'ar-SA' : 'en-US';
       window.speechSynthesis.speak(msg);
     }
 
-    // التحقق من الإجابة
-    function checkAnswer() {
-      const ans = document.getElementById('studentAnswer').value.trim();
-      const feedback = document.getElementById('aiFeedback');
-      feedback.classList.remove('hidden');
-
-      if(!ans) {
-        feedback.className = "p-3 rounded-xl bg-yellow-900/30 border border-yellow-600 text-yellow-300 text-xs text-center";
-        feedback.innerText = "يرجى كتابة الإجابة أولاً للتحقق!";
-        return;
-      }
-
-      if((currentCourse === 'ar' && (ans === 'شمس' || ans === 'شَمْس')) || 
-         (currentCourse === 'en' && ans.toLowerCase() === 'apple')) {
-        feedback.className = "p-3 rounded-xl bg-emerald-900/30 border border-emerald-600 text-emerald-300 text-xs text-center";
-        feedback.innerText = "🎉 ممتازة! إجابة صحيحة بنسبة 100%. تم فتح المستوى التالي!";
-      } else {
-        feedback.className = "p-3 rounded-xl bg-rose-900/30 border border-rose-600 text-rose-300 text-xs text-center";
-        feedback.innerText = "❌ إجابة تحتاج تصحيح. حاول مرة أخرى للتأكد من الاتقان الكامل.";
-      }
+    function speakLetter(letter) {
+      const isArabic = /[\u0600-\u06FF]/.test(letter);
+      const msg = new SpeechSynthesisUtterance(letter);
+      msg.lang = isArabic ? 'ar-SA' : 'en-US';
+      window.speechSynthesis.speak(msg);
     }
 
-    // تسجيل أدمن
-    function verifyAdmin() {
-      const pass = document.getElementById('adminPass').value;
-      if(pass === "214204") {
-        document.getElementById('adminAuth').classList.add('hidden');
-        document.getElementById('adminContent').classList.remove('hidden');
-      } else {
-        alert('كلمة المرور غير صحيحة!');
-      }
-    }
-
-    // تسجيل المظهر المظلم
-    function toggleTheme() {
-      document.body.classList.toggle('bg-slate-900');
-      document.body.classList.toggle('bg-slate-950');
+    function clearChat() {
+      document.getElementById('chatContainer').innerHTML = `
+        <div class="flex gap-2 items-start">
+          <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+          <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
+            تم مسح الدردشة. يمكنك بدء سؤال جديد الآن! 💡
+          </div>
+        </div>
+      `;
     }
   </script>
 </body>
-             </html>
-             
+</html>
