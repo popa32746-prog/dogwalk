@@ -1,285 +1,70 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dog Walk PRO | مشي ورعاية الكلاب</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; }
-    .glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-  </style>
-</head>
-<body class="pb-20">
+أنشئ تطبيقاً تعليمياً تفاعلياً متكاملاً وجاهزاً للاستخدام الفعلي (Production-Ready) باللغة العربية مخصصاً لتعليم الكتابة الصحيحة للغة العربية، إضافة إلى تعليم الحروف، النطق، والقراءة للغة الإنجليزية من البداية وحتى الاحتراف باستخدام الذكاء الاصطناعي كمدرس شخصي.
 
-  <!-- الهيدر مع زر سري للإدارة -->
-  <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center">
-    <div class="flex items-center gap-2">
-      <span onclick="openAdminModal()" class="w-3 h-3 rounded-full bg-slate-700 cursor-pointer" title="الإدارة"></span>
-      <h1 class="text-xl font-black text-white">DogWalk <span class="text-indigo-400">PRO</span> 🐕</h1>
-    </div>
-    <button onclick="switchTab('home')" class="text-xs text-indigo-300 font-bold">الرئيسية</button>
-  </header>
+---
 
-  <main class="max-w-md mx-auto p-4 space-y-6">
+### 1. نظرة عامة والهدف من التطبيق (Overview & Goal)
+* **نوع التطبيق:** منصة تعليمية تفاعلية تعتمد كلياً على الذكاء الاصطناعي التكيفي (Adaptive AI Tutor).
+* **اللغة الأساسية للواجهة:** اللغة العربية فقط (مع دعم اتجاه الواجهة من اليمين إلى اليسار RTL).
+* **الفئة المستهدفة:** الأطفال (الكبار والصغار) مع توفير مساحة متابعة خاصة بأولياء الأمور.
+* **نموذج الاستخدام:** تطبيق مجاني بالكامل بدون أي اشتراكات أو رسوم.
 
-    <!-- التبويبات -->
-    <div class="flex bg-slate-800 p-1 rounded-xl text-xs font-bold text-center">
-      <button onclick="switchTab('home')" id="tabHome" class="flex-1 py-2 rounded-lg bg-indigo-600 text-white">الرئيسية والحجز</button>
-      <button onclick="switchTab('captain')" id="tabCaptain" class="flex-1 py-2 rounded-lg text-slate-400">انضم ككابتن</button>
-    </div>
+---
 
-    <!-- قسم الحجز الرئيسي -->
-    <div id="sectionHome" class="space-y-6">
-      <div class="glass p-5 rounded-2xl text-center space-y-2">
-        <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full text-xs font-bold">🛡️ خدمة معتمدة ورعاية 100%</span>
-        <h2 class="text-2xl font-black mt-2">صاحبك الوفي يستاهل أحسن رعاية 🐾</h2>
-        <div class="bg-slate-800/80 p-3 rounded-xl flex justify-between items-center mt-3 border border-slate-700">
-          <span class="text-xs text-slate-300">سعر جولة المشي:</span>
-          <span class="text-xl font-bold text-emerald-400">500 جنيه / ساعة</span>
-        </div>
-      </div>
+### 2. أدوار المستخدمين والصلاحيات (Roles & Permissions)
+1. **الطالب (Student):**
+   - إنشـاء ملف شخصي واختيار الفئة العمرية (طفل / بالغ) لتكيف تصميم الواجهة وسلاسة التعلم.
+   - خوض المسارات التعليمية والاختبارات التفاعلية تحت إشراف المدرس الذكي (AI Tutor).
+   - متابعة التقدم الشخصي، الأوسمة، وشارات الإنجاز.
+2. **ولي الأمر (Parent):**
+   - لوحة تحكم مخصصة لمتابعة تقارير أداء ومستوى الطفل.
+   - إشعارات يومية وأسبوعية بمستوى الإتقان والأخطاء الشائعة والوقت المستغرق في التعلم.
+3. **المشرف/المعلم (Admin/Instructor):**
+   - لوحة تحكم لإدارة المناهج والمسارات التعليمية، مع إمكانية ضبط معايير الدقة للذكاء الاصطناعي.
 
-      <div class="glass p-5 rounded-2xl space-y-3">
-        <h3 class="font-bold text-indigo-300 text-sm">📝 احجز جولة جديدة لكلبك</h3>
-        <input type="text" id="cName" placeholder="اسمك بالكامل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-        
-        <div class="flex gap-2">
-          <input type="tel" id="cPhone" placeholder="رقم الموبايل (01xxxxxxxxx)" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-          <button onclick="sendOTP()" class="bg-indigo-600 text-white text-xs px-3 rounded-xl font-bold shrink-0">كود SMS</button>
-        </div>
+---
 
-        <div id="otpBox" class="hidden bg-indigo-950 p-3 rounded-xl border border-indigo-700 space-y-2">
-          <p class="text-xs text-indigo-200">أدخل رمز الأمان:</p>
-          <div class="flex gap-2">
-            <input type="text" id="otpInput" placeholder="الرمز" class="w-full bg-slate-800 p-2 text-center text-xs font-bold rounded-lg text-white">
-            <button onclick="verifyOTP()" class="bg-emerald-600 text-white text-xs px-3 rounded-lg font-bold">تأكيد</button>
-          </div>
-        </div>
+### 3. المسارات التعليمية والمستويات (Learning Paths & Levels)
+يحتوي التطبيق على مسارين رئيسيين مقسمين إلى مستويات متدرجة، ولا يتم فتح أي مستوى جديد إلا بعد اجتياز اختبار المستوى الحالي بنسبة إتقان 100%:
 
-        <input type="text" id="dogInfo" placeholder="اسم وسلالة الكلب" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white">
-        <textarea id="cAddr" placeholder="العنوان بالتفصيل" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-xs text-white h-16"></textarea>
+* **المسار الأول: تعليم الكتابة الصحيحة للغة العربية**
+  - مستوى تعليم قواعد رسم الحروف والكلمات (خطوة بخطوة).
+  - مستوى التدريب التفاعلي على الكتابة بخط اليد/الكيبورد وتصحيح الأخطاء إملائياً ولغوياً فوراً.
+  - مستوى اختبارات الإملاء التفاعلية مع الذكاء الاصطناعي.
 
-        <div class="bg-emerald-950/60 border border-emerald-600/40 p-3 rounded-xl text-xs space-y-1">
-          <p class="font-bold text-emerald-300">💳 بيانات الدفع والتحويل:</p>
-          <p class="text-slate-300">فودافون كاش أو InstaPay على الرقم:</p>
-          <div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-700">
-            <b class="text-emerald-400 font-mono text-sm">01030145357</b>
-            <button onclick="navigator.clipboard.writeText('01030145357'); alert('تم نسخ الرقم!');" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded font-bold">نسخ الرقم</button>
-          </div>
-        </div>
+* **المسار الثاني: الكورس المكثف للغة الإنجليزية (من الصفر حتى الاحتراف)**
+  - **Level 1 (الحروف):** تعليم اسم الحرف، شكله، وصوته التفاعلي (مع كتابة النطق باللغة العربية للتعلم للمبتدئين).
+  - **Level 2 (مراجعة الحروف):** اختبارات مكثفة للتأكد التام من حفظ جميع الحروف صم قبل الانتقال.
+  - **Level 3 (نطق الحروف والتركيبات):** تدريب تفاعلي بالصوت على نطق الحروف المركبة والمقاطع الصوتية.
+  - **Level 4 (الكلمات والمفردات):** بناء حصيلة لغوية وشرح المعاني والتطبيقات.
+  - **Level 5 (القراءة والتركيب):** قراءة النصوص والقصص القصيرة وتصحيح النطق بالذكاء الاصطناعي.
+  - **Level 6 (الاحتراف والمحادثة):** محاكاة محادثات حية وممارسات كتابية مع الذكاء الاصطناعي.
 
-        <div>
-          <label class="text-[10px] text-slate-400 block mb-1">إرفاق إيصال التحويل / سكرين شوت:</label>
-          <input type="file" id="payReceipt" accept="image/*" class="text-xs text-slate-400">
-        </div>
+---
 
-        <button onclick="submitBooking()" class="w-full bg-emerald-600 font-bold p-3 rounded-xl text-xs text-white">تأكيد وإرسال الطلب</button>
-      </div>
+### 4. المدرس الذكي وآلية التقييم (AI Tutor Engine & Workflow)
+* **المعلم الشخصي الذكي (AI Tutor):**
+  - يقوم بتقييم إجابات الطالب في الكتابة والنطق بشكل لحظي وفوري.
+  - **شرط الانتقال الصارم:** يحلل الذكاء الاصطناعي أداء الطالب في الاختبار ولا يتيح الانتقال للمستوى التالي إلا بعد التأكد بنسبة 100% من استيعاب الطالب وحفظه الكامل للمادة.
+  - يقدم الذكاء الاصطناعي توجيهاً ودوداً وتغذية راجعة فورية لتصحيح الأخطاء.
 
-      <!-- آراء العملاء -->
-      <div class="glass p-5 rounded-2xl space-y-4">
-        <h3 class="font-bold text-amber-400 text-sm">⭐ آراء وتجارب العملاء</h3>
-        <div id="reviewsList" class="space-y-3"></div>
-      </div>
-    </div>
+---
 
-    <!-- قسم انضمام الكباتن -->
-    <div id="sectionCaptain" class="hidden glass p-5 rounded-2xl space-y-3">
-      <h3 class="font-bold text-indigo-300 text-sm">🚶‍♂️ تسجيل بيانات كابتن جديد</h3>
-      <input type="text" id="capName" placeholder="الاسم رباعي" class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white">
-      <input type="tel" id="capPhone" placeholder="رقم الموبايل" class="w-full bg-slate-800 border border-slate-700 p-2 rounded-xl text-xs text-white">
-      
-      <div class="space-y-2 text-xs text-slate-300">
-        <label class="block">صورة شخصية:<input type="file" id="capPic" accept="image/*" class="w-full mt-1 text-[10px]"></label>
-        <label class="block">صورة البطاقة (وجه):<input type="file" id="capIdF" accept="image/*" class="w-full mt-1 text-[10px]"></label>
-        <label class="block">صورة البطاقة (ظهر):<input type="file" id="capIdB" accept="image/*" class="w-full mt-1 text-[10px]"></label>
-        <label class="block">صحيفة الفيش والجنائي:<input type="file" id="capCrim" accept="image/*" class="w-full mt-1 text-[10px]"></label>
-      </div>
+### 5. واجهة وتجربة المستخدم (UI/UX Requirements)
+* تصميم حديث وبسيط باللغة العربية (RTL) متوافق مع كافة الشاشات (Responsive Design).
+* **نمط الواجهة المزدوج (Dual UI Modes):**
+  - **نمط الأطفال (Kids Mode):** ألوان مبهجة، عناصر تفاعلية، أوسمة تشجيعية وشخصيات توجيهية.
+  - **نمط الكبار (Adults Mode):** تصميم هادئ، احترافي، ومنظم يركز على سرعة التعلم.
+* التبديل السلس بين النمط المظلم (Dark Mode) والنمط الفاتح (Light Mode).
+* حالات التحميل الذكية (Skeleton Screens, Empty States, Validation Messages).
 
-      <button onclick="submitCaptain()" class="w-full bg-indigo-600 font-bold p-3 rounded-xl text-xs text-white">إرسال المستندات للإدارة</button>
-    </div>
+---
 
-  </main>
+### 6. المتطلبات التقنية والأداء (Technical & Behavior)
+* بناء واجهات برمجية جاهزة (API Ready & Clean Architecture).
+* حفظ تقدم الطلاب بشكل آلي ومستمر على قاعدة البيانات.
+* أداء سريع واستجابة فائقة لمعالجة الصوت والنصوص بالذكاء الاصطناعي.
+* لوحة تقارير وإحصائيات شاملة لكل من ولي الأمر والمشرف.
 
-  <!-- لوحة الإدارة المحمية -->
-  <div id="adminModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-    <div class="glass w-full max-w-md p-5 rounded-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="font-bold text-indigo-300">لوحة الإدارة المحمية 🔒</h3>
-        <button onclick="closeAdminModal()" class="text-slate-400 font-bold">✕</button>
-      </div>
+---
 
-      <div id="adminAuthBox" class="space-y-2">
-        <p class="text-slate-300">أدخل الرمز السري (214204):</p>
-        <input type="password" id="adminPass" placeholder="رمز الدخول" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-xl text-center text-white font-mono">
-        <button onclick="checkAdminPass()" class="w-full bg-indigo-600 p-2.5 rounded-xl font-bold text-white">دخول</button>
-      </div>
-
-      <div id="adminContent" class="hidden space-y-4">
-        <div>
-          <h4 class="font-bold text-emerald-400 mb-2">طلبات الحجز وإيصالات التحويل:</h4>
-          <div id="adminOrders" class="space-y-2"></div>
-        </div>
-        <hr class="border-slate-700">
-        <div>
-          <h4 class="font-bold text-indigo-400 mb-2">طلبات ومستندات الكباتن الجدد:</h4>
-          <div id="adminCaptains" class="space-y-2"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    var generatedOTP = "", isVerified = false;
-
-    var defaultReviews = [
-      { name: "أحمد فتحي", comment: "خدمة ممتازة جداً والكابتن كان ملتزم بالموعد!", stars: 5, date: "2026/10/20" },
-      { name: "سارة محمود", comment: "أمان واحترافية عالية جداً، شكراً لكم.", stars: 5, date: "2026/10/19" }
-    ];
-
-    function getReviews() { var s = localStorage.getItem('dw_rev_v4'); return s ? JSON.parse(s) : defaultReviews; }
-    function getOrders() { var s = localStorage.getItem('dw_ord_v4'); return s ? JSON.parse(s) : []; }
-    function getCaptains() { var s = localStorage.getItem('dw_caps_v4'); return s ? JSON.parse(s) : []; }
-
-    window.onload = function() { renderReviews(); };
-
-    function switchTab(tab) {
-      if(tab === 'home') {
-        document.getElementById('sectionHome').classList.remove('hidden');
-        document.getElementById('sectionCaptain').classList.add('hidden');
-        document.getElementById('tabHome').className = 'flex-1 py-2 rounded-lg bg-indigo-600 text-white';
-        document.getElementById('tabCaptain').className = 'flex-1 py-2 rounded-lg text-slate-400';
-      } else {
-        document.getElementById('sectionHome').classList.add('hidden');
-        document.getElementById('sectionCaptain').classList.remove('hidden');
-        document.getElementById('tabCaptain').className = 'flex-1 py-2 rounded-lg bg-indigo-600 text-white';
-        document.getElementById('tabHome').className = 'flex-1 py-2 rounded-lg text-slate-400';
-      }
-    }
-
-    function sendOTP() {
-      var phone = document.getElementById('cPhone').value.trim();
-      if(!phone || phone.length < 10) { alert("أدخل رقم الموبايل أولاً!"); return; }
-      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      alert("كود التحقق الخاص بك هو: " + generatedOTP);
-      document.getElementById('otpBox').classList.remove('hidden');
-    }
-
-    function verifyOTP() {
-      if(document.getElementById('otpInput').value.trim() === generatedOTP) {
-        isVerified = true;
-        alert("✓ تم التحقق بنجاح!");
-        document.getElementById('otpBox').classList.add('hidden');
-      } else { alert("رمز غير صحيح!"); }
-    }
-
-    function submitBooking() {
-      if(!isVerified) { alert("يرجى تأكيد رقم الموبايل بكود الـ SMS أولاً!"); return; }
-      var name = document.getElementById('cName').value.trim();
-      var phone = document.getElementById('cPhone').value.trim();
-      var dog = document.getElementById('dogInfo').value.trim();
-      var addr = document.getElementById('cAddr').value.trim();
-      var file = document.getElementById('payReceipt').files[0];
-
-      if(!name || !dog || !addr) { alert("أكمل البيانات المطلوبة!"); return; }
-
-      var saveOrder = function(img) {
-        var orders = getOrders();
-        orders.unshift({ id: 'DW-' + Date.now().toString().slice(-5), name, phone, dog, addr, receipt: img || '' });
-        localStorage.setItem('dw_ord_v4', JSON.stringify(orders));
-        alert("تم إرسال طلبك بنجاح!");
-        document.getElementById('cName').value = '';
-        document.getElementById('dogInfo').value = '';
-        document.getElementById('cAddr').value = '';
-        isVerified = false;
-      };
-
-      if(file) {
-        var reader = new FileReader();
-        reader.onload = function(e) { saveOrder(e.target.result); };
-        reader.readAsDataURL(file);
-      } else { saveOrder(''); }
-    }
-
-    function submitCaptain() {
-      var name = document.getElementById('capName').value.trim();
-      var phone = document.getElementById('capPhone').value.trim();
-      var pic = document.getElementById('capPic').files[0];
-      var idF = document.getElementById('capIdF').files[0];
-      var idB = document.getElementById('capIdB').files[0];
-      var crim = document.getElementById('capCrim').files[0];
-
-      if(!name || !phone || !pic || !idF || !idB || !crim) { alert("يرجى إدخال البيانات ورفع كافة المستندات المطلوبة!"); return; }
-
-      Promise.all([
-        toBase64(pic), toBase64(idF), toBase64(idB), toBase64(crim)
-      ]).then(function(imgs) {
-        var caps = getCaptains();
-        caps.unshift({ name, phone, pic: imgs[0], idF: imgs[1], idB: imgs[2], crim: imgs[3] });
-        localStorage.setItem('dw_caps_v4', JSON.stringify(caps));
-        alert("تم إرسال مستنداتك للإدارة بنجاح!");
-        document.getElementById('captainRegForm')?.reset();
-      });
-    }
-
-    function toBase64(file) {
-      return new Promise(function(res) {
-        var r = new FileReader();
-        r.onload = function(e) { res(e.target.result); };
-        r.readAsDataURL(file);
-      });
-    }
-
-    function renderReviews() {
-      var list = getReviews(), html = "";
-      for(var i=0; i<list.length; i++) {
-        html += '<div class="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs space-y-1">' +
-                  '<div class="flex justify-between font-bold"><span>' + list[i].name + '</span><span class="text-amber-400">' + '★'.repeat(list[i].stars) + '</span></div>' +
-                  '<p class="text-slate-300">' + list[i].comment + '</p>' +
-                  '<span class="text-[10px] text-slate-500">' + list[i].date + '</span>' +
-                '</div>';
-      }
-      document.getElementById('reviewsList').innerHTML = html;
-    }
-
-    function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
-    function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
-
-    function checkAdminPass() {
-      if(document.getElementById('adminPass').value.trim() !== "214204") { alert("رمز خاطئ!"); return; }
-      document.getElementById('adminAuthBox').classList.add('hidden');
-      document.getElementById('adminContent').classList.remove('hidden');
-      renderAdminData();
-    }
-
-    function renderAdminData() {
-      var orders = getOrders(), caps = getCaptains();
-      
-      var oHtml = "";
-      for(var i=0; i<orders.length; i++) {
-        oHtml += '<div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 space-y-1">' +
-                   '<p><b>الطلب:</b> ' + orders[i].id + ' | <b>العميل:</b> ' + orders[i].name + ' (' + orders[i].phone + ')</p>' +
-                   '<p><b>الكلب والعنوان:</b> ' + orders[i].dog + ' - ' + orders[i].addr + '</p>' +
-                   (orders[i].receipt ? '<a href="' + orders[i].receipt + '" target="_blank" class="text-emerald-400 underline block font-bold">مشاهدة إيصال التحويل (سكرين شوت)</a>' : '<p class="text-slate-400">لا يوجد إيصال مرفق</p>') +
-                 '</div>';
-      }
-      document.getElementById('adminOrders').innerHTML = oHtml || '<p class="text-slate-400">لا توجد طلبات حجز.</p>';
-
-      var cHtml = "";
-      for(var j=0; j<caps.length; j++) {
-        cHtml += '<div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 space-y-2">' +
-                   '<p><b>الكابتن:</b> ' + caps[j].name + ' (' + caps[j].phone + ')</p>' +
-                   '<div class="grid grid-cols-2 gap-1 text-[10px]">' +
-                     '<a href="' + caps[j].pic + '" target="_blank" class="text-indigo-400 underline">الصورة الشخصية</a>' +
-                     '<a href="' + caps[j].crim + '" target="_blank" class="text-indigo-400 underline">الفيش والجنائي</a>' +
-                     '<a href="' + caps[j].idF + '" target="_blank" class="text-indigo-400 underline">البطاقة (وش)</a>' +
-                     '<a href="' + caps[j].idB + '" target="_blank" class="text-indigo-400 underline">البطاقة (ظهر)</a>' +
-                   '</div>' +
-                 '</div>';
-      }
-      document.getElementById('adminCaptains').innerHTML = cHtml || '<p class="text-slate-400">لا توجد طلبات كباتن مسجلة.</p>';
-    }
-  </script>
-</body>
-</html>
+Preserve previous work. Do not overwrite existing modules. Extend the current application only. Keep all existing functionality. Maintain clean architecture and consistent UI/UX. Generate production-ready output.
