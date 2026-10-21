@@ -3,88 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>المعلم الذكي - منصة التعليم التفاعلية</title>
+  <title>المعلم الذكي - الحقيقي</title>
   
-  <!-- إعدادات PWA للموبايل -->
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#0f172a" />
-  <link rel="manifest" href="data:application/manifest+json;utf8,{"name":"المعلم الذكي","short_name":"المعلم الذكي","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a"}" />
 
-  <!-- المكتبات البرمجية -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
-    body {
-      font-family: 'Tajawal', sans-serif;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .chat-bubble-ai {
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 1rem 1rem 0.25rem 1rem;
-    }
-    .chat-bubble-user {
-      background-color: #2563eb;
-      border-radius: 1rem 1rem 1rem 0.25rem;
-    }
-    .active-nav {
-      color: #3b82f6;
-      border-top: 2px solid #3b82f6;
-    }
+    body { font-family: 'Tajawal', sans-serif; }
+    .chat-bubble-ai { background-color: #1e293b; border: 1px solid #334155; border-radius: 1rem 1rem 0.25rem 1rem; }
+    .chat-bubble-user { background-color: #2563eb; border-radius: 1rem 1rem 1rem 0.25rem; }
+    .active-nav { color: #3b82f6; border-top: 2px solid #3b82f6; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between select-none">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
 
-  <!-- الهيدر العلوي -->
-  <header class="bg-slate-800/90 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-slate-700 flex justify-between items-center shadow-lg">
+  <!-- الهيدر -->
+  <header class="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center">
     <div class="flex items-center gap-2">
-      <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">
-        🎓
-      </div>
+      <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl">🎓</div>
       <div>
         <h1 class="font-bold text-lg leading-none">المعلم الذكي</h1>
-        <span class="text-xs text-blue-400">مساعدك الشخصي للتعلم واللغات</span>
+        <span class="text-xs text-blue-400">مدعوم بـ Gemini AI الحقيقي</span>
       </div>
     </div>
-    
-    <div class="flex items-center gap-2">
-      <button onclick="clearChat()" class="text-xs text-slate-400 hover:text-rose-400 p-2">
-        <i class="fa-solid fa-trash-can"></i>
-      </button>
-    </div>
+    <button onclick="clearChat()" class="text-xs text-slate-400 hover:text-rose-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
   </header>
 
-  <!-- محتوى الشاشات الرئيسي -->
+  <!-- محتوى الدردشة -->
   <main class="flex-1 p-4 max-w-md mx-auto w-full pb-24">
-    
-    <!-- القسم الأول: المحادثة المباشرة وسؤال المعلم الذكي -->
     <section id="ai-chat-section" class="space-y-4">
-      <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700">
-        <p class="text-xs text-slate-300 text-center">
-          💡 اسأل المعلم الذكي في أي مسألة، اطلب تصحيح أي كلمة، أو استفسر عن طريقة نطق وقواعد أي حرف.
-        </p>
-      </div>
-
-      <!-- صندوق الرسائل -->
       <div id="chatContainer" class="space-y-3 min-h-[350px] max-h-[60vh] overflow-y-auto p-1">
         <div class="flex gap-2 items-start">
           <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
           <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
-            أهلاً بك يا بطل! أنا معلمك الذكي الشخصي. 🧠<br/>
-            كيف يمكنني مساعدتك اليوم؟ يمكنك كتابة أي كلمة لتصحيحها، أو سؤالك في أي مسألة تعليمية وسيتم الرد عليك فوراً!
+            أهلاً بك يا أحمد! أنا معلمك الذكي متصل الآن بـ Gemini AI مباشرة. اسألني عن أي شيء وسأجيبك بإجابة دقيقة وحقيقية! 🧠
           </div>
         </div>
       </div>
 
-      <!-- مدخل السؤال والدردشة -->
+      <!-- إدخال السؤال -->
       <div class="sticky bottom-20 bg-slate-900/90 pt-2">
-        <form onsubmit="askAI(event)" class="flex gap-2">
-          <input type="text" id="userInput" placeholder=" اكتب سؤالك أو الكلمة المراد تصحيحها..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 shadow-inner" />
-          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow-lg">
+        <form onsubmit="askGeminiAI(event)" class="flex gap-2">
+          <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500" />
+          <button type="submit" id="sendBtn" class="bg-blue-600 text-white font-bold px-4 rounded-xl text-xs flex items-center justify-center gap-1">
             <span>إرسال</span>
             <i class="fa-solid fa-paper-plane"></i>
           </button>
@@ -92,161 +57,103 @@
       </div>
     </section>
 
-    <!-- القسم الثاني: معمل الحروف والنطق الصوتي -->
+    <!-- معمل النطق -->
     <section id="phonics-section" class="hidden space-y-4">
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <h2 class="text-lg font-bold mb-2 text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-volume-high"></i> نطق الحروف والكلمات
-        </h2>
-        <p class="text-xs text-slate-300 mb-4">اكتب أي كلمة أو حرف باللغة العربية أو الإنجليزية للاستماع لنطقه الصحيح فوراً.</p>
-
-        <div class="space-y-3">
-          <input type="text" id="speechText" placeholder="اكتب الكلمة هنا (مثال: Apple / شمس)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-center text-white focus:outline-none focus:border-emerald-500" />
-          
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="speakInput('en')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
-              <span>🔊 نطق إنجليزي</span>
-            </button>
-            <button onclick="speakInput('ar')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
-              <span>🔊 نطق عربي</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- قائمة الحروف السريعة للنطق -->
-      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-        <h3 class="font-bold text-xs text-slate-300 mb-3">اختبار نطق الحروف السريع:</h3>
-        <div class="grid grid-cols-6 gap-2 text-center">
-          <button onclick="speakLetter('A')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">A</button>
-          <button onclick="speakLetter('B')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">B</button>
-          <button onclick="speakLetter('C')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">C</button>
-          <button onclick="speakLetter('D')" class="p-2 bg-slate-900 hover:bg-blue-600 rounded-lg border border-slate-700 font-bold text-sm">D</button>
-          <button onclick="speakLetter('أ')" class="p-2 bg-slate-900 hover:bg-emerald-600 rounded-lg border border-slate-700 font-bold text-sm">أ</button>
-          <button onclick="speakLetter('ب')" class="p-2 bg-slate-900 hover:bg-emerald-600 rounded-lg border border-slate-700 font-bold text-sm">ب</button>
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+        <h2 class="text-lg font-bold mb-2 text-emerald-400"><i class="fa-solid fa-volume-high"></i> نطق الحروف والكلمات</h2>
+        <input type="text" id="speechText" placeholder="اكتب الكلمة للاستماع لنطقها..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-center text-white mb-3" />
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="speakInput('en')" class="bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs">🔊 نطق إنجليزي</button>
+          <button onclick="speakInput('ar')" class="bg-indigo-600 text-white font-bold py-3 rounded-xl text-xs">🔊 نطق عربي</button>
         </div>
       </div>
     </section>
-
-    <!-- القسم الثالث: المسارات والاختبارات التفاعلية -->
-    <section id="courses-section" class="hidden space-y-4">
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <h2 class="text-lg font-bold mb-2 text-purple-400 flex items-center gap-2">
-          <i class="fa-solid fa-layer-group"></i> المسارات التفاعلية
-        </h2>
-        
-        <div class="space-y-3 mt-4">
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
-            <div>
-              <h4 class="font-bold text-xs text-white">مسار الإملاء والكتابة العربية</h4>
-              <p class="text-[10px] text-slate-400">قواعد رسم الحروف والهمزات</p>
-            </div>
-            <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded text-[10px] font-bold">مكتمل 100%</span>
-          </div>
-
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
-            <div>
-              <h4 class="font-bold text-xs text-white">كورس الإنجليزية (Level 1 - 6)</h4>
-              <p class="text-[10px] text-slate-400">من نطق الحروف وحتى المحادثة</p>
-            </div>
-            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-[10px] font-bold">نشط الان</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
-  <!-- شريط التنقل السفلي -->
-  <nav class="bg-slate-800/95 backdrop-blur-md border-t border-slate-700 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto flex justify-around p-2 text-center text-slate-400 text-xs">
-    <button onclick="switchTab('chat')" id="nav-chat" class="flex-1 py-1 flex flex-col items-center gap-1 active-nav">
-      <i class="fa-solid fa-comments text-lg"></i>
-      <span>المعلم الذكي</span>
-    </button>
-    <button onclick="switchTab('phonics')" id="nav-phonics" class="flex-1 py-1 flex flex-col items-center gap-1">
-      <i class="fa-solid fa-volume-high text-lg"></i>
-      <span>نطق الحروف</span>
-    </button>
-    <button onclick="switchTab('courses')" id="nav-courses" class="flex-1 py-1 flex flex-col items-center gap-1">
-      <i class="fa-solid fa-graduation-cap text-lg"></i>
-      <span>المسارات</span>
-    </button>
+  <!-- التنقل -->
+  <nav class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around p-2 text-center text-slate-400 text-xs">
+    <button onclick="switchTab('chat')" id="nav-chat" class="flex-1 py-1 flex flex-col items-center gap-1 active-nav"><i class="fa-solid fa-comments text-lg"></i><span>المعلم الذكي</span></button>
+    <button onclick="switchTab('phonics')" id="nav-phonics" class="flex-1 py-1 flex flex-col items-center gap-1"><i class="fa-solid fa-volume-high text-lg"></i><span>نطق الحروف</span></button>
   </nav>
 
-  <!-- البرمجة التفاعلية الذكية -->
   <script>
-    // التبديل بين الأقسام
     function switchTab(tab) {
       document.getElementById('ai-chat-section').classList.add('hidden');
       document.getElementById('phonics-section').classList.add('hidden');
-      document.getElementById('courses-section').classList.add('hidden');
-
       document.getElementById('nav-chat').classList.remove('active-nav');
       document.getElementById('nav-phonics').classList.remove('active-nav');
-      document.getElementById('nav-courses').classList.remove('active-nav');
 
       if(tab === 'chat') {
         document.getElementById('ai-chat-section').classList.remove('hidden');
         document.getElementById('nav-chat').classList.add('active-nav');
-      } else if(tab === 'phonics') {
+      } else {
         document.getElementById('phonics-section').classList.remove('hidden');
         document.getElementById('nav-phonics').classList.add('active-nav');
-      } else if(tab === 'courses') {
-        document.getElementById('courses-section').classList.remove('hidden');
-        document.getElementById('nav-courses').classList.add('active-nav');
       }
     }
 
-    // إرسال السؤال وإجابة الذكاء الاصطناعي
-    function askAI(e) {
+    async function askGeminiAI(e) {
       e.preventDefault();
       const input = document.getElementById('userInput');
       const text = input.value.trim();
       if(!text) return;
 
       const container = document.getElementById('chatContainer');
-
-      // إضافة رسالة المستخدم
       container.innerHTML += `
         <div class="flex gap-2 items-start justify-end">
-          <div class="chat-bubble-user p-3 text-xs text-white max-w-[85%] leading-relaxed">
-            ${text}
-          </div>
+          <div class="chat-bubble-user p-3 text-xs text-white max-w-[85%] leading-relaxed">${text}</div>
         </div>
       `;
 
       input.value = '';
       container.scrollTop = container.scrollHeight;
 
-      // محاكاة إجابة المعلم الذكي اللحظية
-      setTimeout(() => {
-        let response = generateAIResponse(text);
+      // إضافة مؤشر جاري التفكير
+      const loadingId = 'loading-' + Date.now();
+      container.innerHTML += `
+        <div id="${loadingId}" class="flex gap-2 items-start">
+          <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+          <div class="chat-bubble-ai p-3 text-xs text-slate-400">جاري التفكير والإجابة...</div>
+        </div>
+      `;
+      container.scrollTop = container.scrollHeight;
+
+      try {
+        // الاتصال المباشر بـ Gemini API
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=YOUR_GEMINI_API_KEY', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "أنت معلم لغوي وتعليمي ذكي ومحترف. أجب عن سؤال الطالب التالي بإجابة دقيقة، صحيحة، ومباشرة باللغة العربية:\n" + text }] }]
+          })
+        });
+
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+
+        let aiReply = "عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى التأكد من إضافة مفتاح Gemini API الخاص بك.";
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          aiReply = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br/>');
+        }
+
         container.innerHTML += `
           <div class="flex gap-2 items-start">
             <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
-            <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
-              ${response}
-            </div>
+            <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">${aiReply}</div>
           </div>
         `;
-        container.scrollTop = container.scrollHeight;
-      }, 600);
-    }
-
-    // محرك إجابات الذكاء الاصطناعي التكيفي
-    function generateAIResponse(query) {
-      let q = query.toLowerCase();
-
-      if(q.includes("تصحيح") || q.includes("صحح") || q.includes("إملاء")) {
-        return `✨ **التصحيح اللغوي والإملائي:**<br/>بناءً على التقييم الإملائي: الكلمة الصحيحة تكتب بحركات التشكيل الواضحة ومراعاة رسم الحروف والهمزات. إذا كان لديك كلمة محددة اكتبها لي فوراً وستحصل على تحليلها الصحيح.`;
-      } else if(q.includes("نطق") || q.includes("حرف")) {
-        return `🔊 **طريقة النطق والقواعد:**<br/>عند نطق الحروف المقابلة، تأكد من إخراج الصوت من مخرجه الصحيح. يمكنك استخدام تبويب "نطق الحروف" أسفل الشاشة لسماع الصوت فوراً بلغة واضحة!`;
-      } else {
-        return `إجابة صحيحة ومفصلة لطلبك: **"${query}"**<br/><br/>ملاحظة المعلم الذكي: ممتازة جداً متابعتك! احرص دائماً على تطبيق قاعدة النطق والإملاء بشكل مستمر لضمان إتقان المادة بنسبة 100%. هل لديك أي سؤال آخر في المسألة؟`;
+      } catch (err) {
+        document.getElementById(loadingId).remove();
+        container.innerHTML += `
+          <div class="flex gap-2 items-start">
+            <div class="w-7 h-7 rounded-full bg-rose-600 flex items-center justify-center text-xs font-bold shrink-0">!</div>
+            <div class="chat-bubble-ai p-3 text-xs text-rose-300">حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.</div>
+          </div>
+        `;
       }
+      container.scrollTop = container.scrollHeight;
     }
 
-    // النطق الصوتي للكلمات
     function speakInput(lang) {
       const val = document.getElementById('speechText').value;
       if(!val) return;
@@ -255,20 +162,11 @@
       window.speechSynthesis.speak(msg);
     }
 
-    function speakLetter(letter) {
-      const isArabic = /[\u0600-\u06FF]/.test(letter);
-      const msg = new SpeechSynthesisUtterance(letter);
-      msg.lang = isArabic ? 'ar-SA' : 'en-US';
-      window.speechSynthesis.speak(msg);
-    }
-
     function clearChat() {
       document.getElementById('chatContainer').innerHTML = `
         <div class="flex gap-2 items-start">
           <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
-          <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">
-            تم مسح الدردشة. يمكنك بدء سؤال جديد الآن! 💡
-          </div>
+          <div class="chat-bubble-ai p-3 text-xs text-slate-200 max-w-[85%] leading-relaxed">تم مسح المحادثة. يمكنك بدء سؤال جديد الآن!</div>
         </div>
       `;
     }
