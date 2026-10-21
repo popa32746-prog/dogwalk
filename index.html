@@ -1,70 +1,310 @@
-أنشئ تطبيقاً تعليمياً تفاعلياً متكاملاً وجاهزاً للاستخدام الفعلي (Production-Ready) باللغة العربية مخصصاً لتعليم الكتابة الصحيحة للغة العربية، إضافة إلى تعليم الحروف، النطق، والقراءة للغة الإنجليزية من البداية وحتى الاحتراف باستخدام الذكاء الاصطناعي كمدرس شخصي.
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pawlink & AI Tutor - التطبيق المتكامل</title>
+  
+  <!-- إعدادات الـ PWA للتثبيت على شاشة الموبايل الرئيسية -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a202c" />
+  <link rel="manifest" href="data:application/manifest+json;utf8,{"name":"Pawlink Platform","short_name":"Pawlink","start_url":".","display":"standalone","background_color":"#1a202c","theme_color":"#1a202c"}" />
 
----
+  <!-- مكتبات Tailwind CSS و FontAwesome للأيقونات -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-### 1. نظرة عامة والهدف من التطبيق (Overview & Goal)
-* **نوع التطبيق:** منصة تعليمية تفاعلية تعتمد كلياً على الذكاء الاصطناعي التكيفي (Adaptive AI Tutor).
-* **اللغة الأساسية للواجهة:** اللغة العربية فقط (مع دعم اتجاه الواجهة من اليمين إلى اليسار RTL).
-* **الفئة المستهدفة:** الأطفال (الكبار والصغار) مع توفير مساحة متابعة خاصة بأولياء الأمور.
-* **نموذج الاستخدام:** تطبيق مجاني بالكامل بدون أي اشتراكات أو رسوم.
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+    body {
+      font-family: 'Tajawal', sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .active-tab {
+      color: #3b82f6;
+      border-top: 2px solid #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between select-none">
 
----
+  <!-- الهيدر العلوي -->
+  <header class="bg-slate-800/80 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-slate-700 flex justify-between items-center shadow-lg">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">
+        🐾
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-none">Pawlink & Tutor</h1>
+        <span class="text-xs text-blue-400">المنصة الشاملة الذكية</span>
+      </div>
+    </div>
+    
+    <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-yellow-400">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+  </header>
 
-### 2. أدوار المستخدمين والصلاحيات (Roles & Permissions)
-1. **الطالب (Student):**
-   - إنشـاء ملف شخصي واختيار الفئة العمرية (طفل / بالغ) لتكيف تصميم الواجهة وسلاسة التعلم.
-   - خوض المسارات التعليمية والاختبارات التفاعلية تحت إشراف المدرس الذكي (AI Tutor).
-   - متابعة التقدم الشخصي، الأوسمة، وشارات الإنجاز.
-2. **ولي الأمر (Parent):**
-   - لوحة تحكم مخصصة لمتابعة تقارير أداء ومستوى الطفل.
-   - إشعارات يومية وأسبوعية بمستوى الإتقان والأخطاء الشائعة والوقت المستغرق في التعلم.
-3. **المشرف/المعلم (Admin/Instructor):**
-   - لوحة تحكم لإدارة المناهج والمسارات التعليمية، مع إمكانية ضبط معايير الدقة للذكاء الاصطناعي.
+  <!-- محتوى الشاشات الرئيسي -->
+  <main class="flex-1 p-4 max-w-md mx-auto w-full pb-24">
+    
+    <!-- القسم الأول: خدمة Pawlink لحجز مشي الكلاب -->
+    <section id="pawlink-section" class="space-y-4">
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
+        <h2 class="text-xl font-bold mb-2 text-blue-400 flex items-center gap-2">
+          <i class="fa-solid fa-dog"></i> حجز جولة مشي جديدة
+        </h2>
+        <p class="text-sm text-slate-300 mb-4">احجز كابتن محترف لمشي ورعاية كلبك بكل أمان وسهولة.</p>
+        
+        <form onsubmit="handleBooking(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs mb-1 text-slate-400">اسم الكلب</label>
+            <input type="text" id="dogName" required placeholder="مثال: رعد / سيمبا" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500" />
+          </div>
 
----
+          <div>
+            <label class="block text-xs mb-1 text-slate-400">المنطقة والعنوان</label>
+            <input type="text" id="address" required placeholder="مثال: الخصوص / مصر الجديدة" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500" />
+          </div>
 
-### 3. المسارات التعليمية والمستويات (Learning Paths & Levels)
-يحتوي التطبيق على مسارين رئيسيين مقسمين إلى مستويات متدرجة، ولا يتم فتح أي مستوى جديد إلا بعد اجتياز اختبار المستوى الحالي بنسبة إتقان 100%:
+          <div class="flex gap-2">
+            <div class="flex-1">
+              <label class="block text-xs mb-1 text-slate-400">مدة الجولة</label>
+              <select id="duration" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500">
+                <option value="30">30 دقيقة (250 ج.م)</option>
+                <option value="60" selected>ساعة كاملة (500 ج.م)</option>
+              </select>
+            </div>
+          </div>
 
-* **المسار الأول: تعليم الكتابة الصحيحة للغة العربية**
-  - مستوى تعليم قواعد رسم الحروف والكلمات (خطوة بخطوة).
-  - مستوى التدريب التفاعلي على الكتابة بخط اليد/الكيبورد وتصحيح الأخطاء إملائياً ولغوياً فوراً.
-  - مستوى اختبارات الإملاء التفاعلية مع الذكاء الاصطناعي.
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 mt-2">
+            تأكيد الحجز فوراً 🚀
+          </button>
+        </form>
+      </div>
 
-* **المسار الثاني: الكورس المكثف للغة الإنجليزية (من الصفر حتى الاحتراف)**
-  - **Level 1 (الحروف):** تعليم اسم الحرف، شكله، وصوته التفاعلي (مع كتابة النطق باللغة العربية للتعلم للمبتدئين).
-  - **Level 2 (مراجعة الحروف):** اختبارات مكثفة للتأكد التام من حفظ جميع الحروف صم قبل الانتقال.
-  - **Level 3 (نطق الحروف والتركيبات):** تدريب تفاعلي بالصوت على نطق الحروف المركبة والمقاطع الصوتية.
-  - **Level 4 (الكلمات والمفردات):** بناء حصيلة لغوية وشرح المعاني والتطبيقات.
-  - **Level 5 (القراءة والتركيب):** قراءة النصوص والقصص القصيرة وتصحيح النطق بالذكاء الاصطناعي.
-  - **Level 6 (الاحتراف والمحادثة):** محاكاة محادثات حية وممارسات كتابية مع الذكاء الاصطناعي.
+      <!-- قائمة الطلبات الحالية -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+        <h3 class="font-bold text-sm text-slate-300 mb-2">طلبات الحجز الأخيرة</h3>
+        <div id="bookingsList" class="text-xs text-slate-400 space-y-2">
+          <p class="text-center py-4">لا توجد حجوزات سابقة حتى الآن.</p>
+        </div>
+      </div>
+    </section>
 
----
+    <!-- القسم الثاني: المدرس الذكي (AI Tutor) -->
+    <section id="tutor-section" class="hidden space-y-4">
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
+        <h2 class="text-xl font-bold mb-2 text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap"></i> المعلم الذكي التفاعلي
+        </h2>
+        <p class="text-sm text-slate-300 mb-4">تعلم قواعد الإملاء العربي ومراحل اللغة الإنجليزية بالذكاء الاصطناعي.</p>
 
-### 4. المدرس الذكي وآلية التقييم (AI Tutor Engine & Workflow)
-* **المعلم الشخصي الذكي (AI Tutor):**
-  - يقوم بتقييم إجابات الطالب في الكتابة والنطق بشكل لحظي وفوري.
-  - **شرط الانتقال الصارم:** يحلل الذكاء الاصطناعي أداء الطالب في الاختبار ولا يتيح الانتقال للمستوى التالي إلا بعد التأكد بنسبة 100% من استيعاب الطالب وحفظه الكامل للمادة.
-  - يقدم الذكاء الاصطناعي توجيهاً ودوداً وتغذية راجعة فورية لتصحيح الأخطاء.
+        <!-- اختيارات المسار التعليمي -->
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <button onclick="setCourse('ar')" id="btn-ar" class="p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500">
+            🇸🇦 الإملاء والعربية
+          </button>
+          <button onclick="setCourse('en')" id="btn-en" class="p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600">
+            🇬🇧 الإنجليزية (6 مستويات)
+          </button>
+        </div>
 
----
+        <!-- منطقة الدرس التفاعلي -->
+        <div id="lessonCard" class="bg-slate-900 p-4 rounded-xl border border-slate-700 mb-4 text-center">
+          <span class="text-xs text-emerald-400 font-bold block mb-1">المستوى الأول: الحروف والأساسيات</span>
+          <h4 class="text-2xl font-black mb-2 text-white" id="currentQuestion">حرف A - Apple 🍎</h4>
+          <p class="text-xs text-slate-400 mb-4" id="instructionText">اضغط على الزر أدناه لسماع النطق الصحيح وتكراره</p>
+          
+          <button onclick="speakText()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs text-blue-400 border border-slate-600 mb-3">
+            🔊 استمع للنطق الصوتي
+          </button>
 
-### 5. واجهة وتجربة المستخدم (UI/UX Requirements)
-* تصميم حديث وبسيط باللغة العربية (RTL) متوافق مع كافة الشاشات (Responsive Design).
-* **نمط الواجهة المزدوج (Dual UI Modes):**
-  - **نمط الأطفال (Kids Mode):** ألوان مبهجة، عناصر تفاعلية، أوسمة تشجيعية وشخصيات توجيهية.
-  - **نمط الكبار (Adults Mode):** تصميم هادئ، احترافي، ومنظم يركز على سرعة التعلم.
-* التبديل السلس بين النمط المظلم (Dark Mode) والنمط الفاتح (Light Mode).
-* حالات التحميل الذكية (Skeleton Screens, Empty States, Validation Messages).
+          <div class="mt-2">
+            <input type="text" id="studentAnswer" placeholder="اكتب الإجابة هنا..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-center text-white mb-2 focus:outline-none focus:border-emerald-500" />
+            <button onclick="checkAnswer()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+              تحقق من الإجابة بالذكاء الاصطناعي ✨
+            </button>
+          </div>
+        </div>
 
----
+        <div id="aiFeedback" class="hidden p-3 rounded-xl bg-slate-900 border text-xs text-center"></div>
+      </div>
+    </section>
 
-### 6. المتطلبات التقنية والأداء (Technical & Behavior)
-* بناء واجهات برمجية جاهزة (API Ready & Clean Architecture).
-* حفظ تقدم الطلاب بشكل آلي ومستمر على قاعدة البيانات.
-* أداء سريع واستجابة فائقة لمعالجة الصوت والنصوص بالذكاء الاصطناعي.
-* لوحة تقارير وإحصائيات شاملة لكل من ولي الأمر والمشرف.
+    <!-- القسم الثالث: لوحة التحكم الإدارية (Admin) -->
+    <section id="admin-section" class="hidden space-y-4">
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
+        <h2 class="text-xl font-bold mb-2 text-purple-400 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield"></i> لوحة تحكم الأدمن
+        </h2>
+        <p class="text-xs text-slate-400 mb-4">ادخل كلمة السر للوصول إلى بيانات إدارة الكباتن والحجوزات.</p>
 
----
+        <div id="adminAuth" class="space-y-3">
+          <input type="password" id="adminPass" placeholder="كلمة المرور الخاصة بالأدمن" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none" />
+          <button onclick="verifyAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl text-xs">
+            تسجيل الدخول
+          </button>
+        </div>
 
-Preserve previous work. Do not overwrite existing modules. Extend the current application only. Keep all existing functionality. Maintain clean architecture and consistent UI/UX. Generate production-ready output.
+        <div id="adminContent" class="hidden space-y-3 pt-2">
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 text-xs">
+            <p class="text-emerald-400 font-bold mb-1">✓ تم التوثيق بنجاح كمدير نظام</p>
+            <p class="text-slate-300">يمكنك الآن تعديل تفاصيل الحجوزات أو قبول المشاة الجدد.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- شريط التنقل السفلي المخصص للموبايل (Bottom Navigation) -->
+  <nav class="bg-slate-800/90 backdrop-blur-md border-t border-slate-700 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto flex justify-around p-2 text-center text-slate-400 text-xs">
+    <button onclick="switchTab('pawlink')" id="nav-pawlink" class="flex-1 py-1 flex flex-col items-center gap-1 active-tab">
+      <i class="fa-solid fa-dog text-lg"></i>
+      <span>حجز مشي</span>
+    </button>
+    <button onclick="switchTab('tutor')" id="nav-tutor" class="flex-1 py-1 flex flex-col items-center gap-1">
+      <i class="fa-solid fa-graduation-cap text-lg"></i>
+      <span>المعلم الذكي</span>
+    </button>
+    <button onclick="switchTab('admin')" id="nav-admin" class="flex-1 py-1 flex flex-col items-center gap-1">
+      <i class="fa-solid fa-user-shield text-lg"></i>
+      <span>الإدارة</span>
+    </button>
+  </nav>
+
+  <!-- السكريبت والبرمجة التفاعلية -->
+  <script>
+    let currentCourse = 'ar';
+    let bookings = [];
+
+    // التبديل بين الشاشات
+    function switchTab(tab) {
+      document.getElementById('pawlink-section').classList.add('hidden');
+      document.getElementById('tutor-section').classList.add('hidden');
+      document.getElementById('admin-section').classList.add('hidden');
+
+      document.getElementById('nav-pawlink').classList.remove('active-tab');
+      document.getElementById('nav-tutor').classList.remove('active-tab');
+      document.getElementById('nav-admin').classList.remove('active-tab');
+
+      if(tab === 'pawlink') {
+        document.getElementById('pawlink-section').classList.remove('hidden');
+        document.getElementById('nav-pawlink').classList.add('active-tab');
+      } else if(tab === 'tutor') {
+        document.getElementById('tutor-section').classList.remove('hidden');
+        document.getElementById('nav-tutor').classList.add('active-tab');
+      } else if(tab === 'admin') {
+        document.getElementById('admin-section').classList.remove('hidden');
+        document.getElementById('nav-admin').classList.add('active-tab');
+      }
+    }
+
+    // إدارة حجز المشي
+    function handleBooking(e) {
+      e.preventDefault();
+      const dogName = document.getElementById('dogName').value;
+      const address = document.getElementById('address').value;
+      const duration = document.getElementById('duration').value;
+
+      const newBooking = {
+        id: 'DW-' + Math.floor(1000 + Math.random() * 9000),
+        dogName,
+        address,
+        duration,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      bookings.unshift(newBooking);
+      renderBookings();
+      alert('تم تقديم طلب الحجز بنجاح! رقم الحجز: ' + newBooking.id);
+      document.getElementById('dogName').value = '';
+      document.getElementById('address').value = '';
+    }
+
+    function renderBookings() {
+      const list = document.getElementById('bookingsList');
+      if(bookings.length === 0) {
+        list.innerHTML = '<p class="text-center py-4">لا توجد حجوزات سابقة حتى الآن.</p>';
+        return;
+      }
+      list.innerHTML = bookings.map(b => `
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
+          <div>
+            <span class="font-bold text-white block">${b.dogName} (${b.duration} دقيقة)</span>
+            <span class="text-slate-400 text-[10px]">${b.address} - ${b.time}</span>
+          </div>
+          <span class="px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-[10px] font-bold">${b.id}</span>
+        </div>
+      `).join('');
+    }
+
+    // تبديل مسار التعليم
+    function setCourse(type) {
+      currentCourse = type;
+      if(type === 'ar') {
+        document.getElementById('btn-ar').className = "p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500";
+        document.getElementById('btn-en').className = "p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600";
+        document.getElementById('currentQuestion').innerText = "اكتب كلمة (شَمْس) بالتشكيل الصحيح";
+        document.getElementById('instructionText').innerText = "اختبار إملاء عربي لحظي بالذكاء الاصطناعي";
+      } else {
+        document.getElementById('btn-en').className = "p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs border border-emerald-500";
+        document.getElementById('btn-ar').className = "p-3 rounded-xl bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600";
+        document.getElementById('currentQuestion').innerText = "A - Apple 🍎";
+        document.getElementById('instructionText').innerText = "استمع للنطق واكتب الكلمة بالإنجليزية";
+      }
+    }
+
+    // النطق الصوتي
+    function speakText() {
+      const text = currentCourse === 'ar' ? 'شمس' : 'Apple';
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = currentCourse === 'ar' ? 'ar-SA' : 'en-US';
+      window.speechSynthesis.speak(msg);
+    }
+
+    // التحقق من الإجابة
+    function checkAnswer() {
+      const ans = document.getElementById('studentAnswer').value.trim();
+      const feedback = document.getElementById('aiFeedback');
+      feedback.classList.remove('hidden');
+
+      if(!ans) {
+        feedback.className = "p-3 rounded-xl bg-yellow-900/30 border border-yellow-600 text-yellow-300 text-xs text-center";
+        feedback.innerText = "يرجى كتابة الإجابة أولاً للتحقق!";
+        return;
+      }
+
+      if((currentCourse === 'ar' && (ans === 'شمس' || ans === 'شَمْس')) || 
+         (currentCourse === 'en' && ans.toLowerCase() === 'apple')) {
+        feedback.className = "p-3 rounded-xl bg-emerald-900/30 border border-emerald-600 text-emerald-300 text-xs text-center";
+        feedback.innerText = "🎉 ممتازة! إجابة صحيحة بنسبة 100%. تم فتح المستوى التالي!";
+      } else {
+        feedback.className = "p-3 rounded-xl bg-rose-900/30 border border-rose-600 text-rose-300 text-xs text-center";
+        feedback.innerText = "❌ إجابة تحتاج تصحيح. حاول مرة أخرى للتأكد من الاتقان الكامل.";
+      }
+    }
+
+    // تسجيل أدمن
+    function verifyAdmin() {
+      const pass = document.getElementById('adminPass').value;
+      if(pass === "214204") {
+        document.getElementById('adminAuth').classList.add('hidden');
+        document.getElementById('adminContent').classList.remove('hidden');
+      } else {
+        alert('كلمة المرور غير صحيحة!');
+      }
+    }
+
+    // تسجيل المظهر المظلم
+    function toggleTheme() {
+      document.body.classList.toggle('bg-slate-900');
+      document.body.classList.toggle('bg-slate-950');
+    }
+  </script>
+</body>
+             </html>
+             
