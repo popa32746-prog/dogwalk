@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10251f">
+  <title>مشي الكلاب | Dog Walking PRO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#f5f7f5;--ink:#17231f;--muted:#66736d;--green:#167653;--deep:#10251f;--mint:#e4f4ec;--line:#e0e7e2;--white:#fff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif;line-height:1.6}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding-bottom:84px}
+    header{background:linear-gradient(140deg,#10251f,#1a6248);color:white;padding:24px 18px 26px;border-radius:0 0 26px 26px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.logo{display:grid;place-items:center;width:48px;height:48px;background:#ffffff20;border:1px solid #ffffff35;border-radius:16px;font-size:27px}
+    h1{font-size:21px;margin:0}.sub{font-size:13px;color:#d3e6dc;margin:2px 0 0}.role-pill{border:1px solid #ffffff55;background:#ffffff18;border-radius:99px;padding:7px 11px;font-size:12px;color:white}
+    .hero{margin-top:20px}.hero h2{font-size:24px;line-height:1.35;margin:0 0 8px}.hero p{margin:0;color:#d9e8df;font-size:13px}
+    .price-banner{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:16px;margin:-16px 15px 18px;box-shadow:0 8px 24px #173d2a12}
+    .price-banner small{color:var(--muted)}.price{font-size:24px;color:var(--green);font-weight:800}.price span{font-size:13px}
+    main{padding:0 15px}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}.nav button{border:1px solid var(--line);background:white;border-radius:13px;padding:10px 5px;color:var(--muted);font-weight:700}.nav button.active{background:var(--deep);color:white;border-color:var(--deep)}
+    .card{background:white;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:0 3px 12px #132b1d05}.card h3{margin:0 0 5px;font-size:18px}.hint{margin:0 0 15px;color:var(--muted);font-size:13px}
+    .field{margin-bottom:13px}.field label{display:block;font-size:13px;font-weight:750;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #d8e1db;border-radius:12px;padding:12px;background:#fbfcfb;color:var(--ink);outline:none}.field textarea{min-height:78px;resize:vertical}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.total{display:flex;align-items:center;justify-content:space-between;background:var(--mint);border-radius:13px;padding:13px;margin:14px 0}.total strong{font-size:21px;color:var(--green)}
+    .primary,.secondary,.danger{width:100%;border:0;border-radius:13px;padding:13px;font-weight:800}.primary{background:var(--green);color:white}.secondary{background:var(--mint);color:var(--green);margin-top:9px}.danger{background:#fff0ed;color:#a73525;margin-top:8px}
+    .service-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.service{background:#f7faf8;border:1px solid var(--line);border-radius:14px;padding:13px}.service .emoji{font-size:25px}.service b{display:block;margin-top:5px}.service span{font-size:12px;color:var(--muted)}
+    .booking{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}.booking-top{display:flex;justify-content:space-between;gap:10px}.status{font-size:11px;font-weight:800;border-radius:99px;padding:4px 8px;background:#fff0d8;color:#8b5a08;height:max-content}.booking p{margin:7px 0;color:var(--muted);font-size:13px}
+    .empty{text-align:center;padding:25px 10px;color:var(--muted)}.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px max(15px,calc((100vw - 730px)/2));display:flex;justify-content:space-around;z-index:5}.bottom button{background:none;border:0;color:var(--muted);font-size:12px;font-weight:700}.bottom button span{display:block;font-size:20px}.bottom button.active{color:var(--green)}
+    .hidden{display:none!important}.toast{position:fixed;bottom:78px;left:15px;right:15px;max-width:500px;margin:auto;background:#10251f;color:white;padding:13px 16px;border-radius:13px;z-index:50;box-shadow:0 8px 25px #0002}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top">
+      <div class="brand"><div class="logo">🐕</div><div><h1>مشي الكلاب</h1><p class="sub">رعاية وأمان 100%</p></div></div>
+      <button class="role-pill" id="roleButton" type="button">حساب عميل ▾</button>
+    </div>
+    <div class="hero"><h2>صاحبك الوفي يستاهل<br>أحسن رعاية 🐾</h2><p>احجز جولة مع كابتن يهتم بكلبك كأنه كلبه.</p></div>
+  </header>
+
+  <div class="price-banner">
+    <div><small>سعر المشي للساعة</small><div class="price">500 <span>جنيه مصري</span></div></div>
+    <div style="font-size:35px">🦮</div>
+  </div>
+
+  <main>
+    <nav class="nav">
+      <button class="active" data-page="home">الرئيسية</button>
+      <button data-page="book">احجز جولة</button>
+      <button data-page="orders">طلباتي</button>
+    </nav>
+
+    <!-- الرئيسية -->
+    <section id="page-home" class="space-y-4">
+      <div class="card">
+        <h3>أهلًا بيك في مشي الكلاب 👋</h3>
+        <p class="hint">خدمات بسيطة لراحة وأمان كائنك الأليف.</p>
+        <div class="service-grid">
+          <div class="service"><div class="emoji">🦮</div><b>مشي الكلاب</b><span>جولات مخصصة وآمنة</span></div>
+          <div class="service"><div class="emoji">🏡</div><b>رعاية واهتمام</b><span>تنفيذ كافة التوصيات</span></div>
+          <div class="service"><div class="emoji">💳</div><b>دفع آمن</b><span>فودافون كاش / InstaPay</span></div>
+          <div class="service"><div class="emoji">⭐</div><b>تقييمات مصورة</b><span>تجارب حقيقية بالصور</span></div>
+        </div>
+        <button class="primary" data-go="book">احجز جولة دلوقتي</button>
+      </div>
+
+      <!-- معرض التقييمات التفاعلي والإنباهر (Amazon Style Reviews) -->
+      <div class="card space-y-3">
+        <div class="flex justify-between items-center border-b pb-2">
+          <h3 class="text-sm font-bold text-emerald-900">آراء وتجارب العملاء بالصور ⭐</h3>
+          <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">4.9 / 5</span>
+        </div>
+
+        <div id="publicReviewsList" class="space-y-3 max-h-80 overflow-y-auto"></div>
+
+        <div class="pt-3 border-t space-y-2">
+          <h4 class="text-xs font-bold text-slate-700">أضف تقييمك وصورة كلبك 📸</h4>
+          <input type="text" id="revAuthor" placeholder="اسمك الكريم" class="w-full p-2 border rounded-xl text-xs">
+          <textarea id="revComment" placeholder="اكتب رأيك في الكابتن والخدمة..." class="w-full p-2 border rounded-xl text-xs h-16"></textarea>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="file" id="revImage" accept="image/*" class="text-[10px] text-slate-500">
+            <select id="revStars" class="p-2 border rounded-xl text-xs">
+              <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+              <option value="4">⭐⭐⭐⭐ (4/5)</option>
+            </select>
+          </div>
+          <button type="button" onclick="submitPublicReview()" class="secondary">إضافة التقييم والصورة</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- طلب حجز -->
+    <section id="page-book" class="hidden">
+      <div class="card">
+        <h3>احجز جولة جديدة 🐾</h3>
+        <form id="bookingForm">
+          <div class="two">
+            <div class="field"><label>اسم العميل *</label><input id="customer" required placeholder="اسمك بالكامل"></div>
+            <div class="field">
+              <label>رقم الموبايل *</label>
+              <div class="flex gap-1">
+                <input id="phone" required placeholder="01xxxxxxxxx">
+                <button type="button" onclick="sendPhoneOTP()" class="bg-indigo-600 text-white px-2 py-1 rounded-xl text-xs font-bold shrink-0">إرسال كود SMS</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="otpVerifyBox" class="hidden p-3 bg-indigo-50 border border-indigo-200 rounded-xl mb-3 space-y-2">
+            <p class="text-xs text-indigo-900 font-bold">أدخل كود التحقق المرسل لرقمك:</p>
+            <div class="flex gap-2">
+              <input type="text" id="otpInputCode" placeholder="أدخل الرمز" class="p-2 border rounded-xl text-center text-xs font-bold w-full">
+              <button type="button" onclick="verifyPhoneOTP()" class="bg-emerald-600 text-white px-3 py-1 rounded-xl text-xs font-bold shrink-0">تأكيد الرمز</button>
+            </div>
+          </div>
+
+          <div class="two">
+            <div class="field"><label>اسم الكلب *</label><input id="dog" required placeholder="اسم الكلب"></div>
+            <div class="field"><label>حجم الكلب</label><select id="size"><option>صغير</option><option selected>متوسط</option><option>كبير</option></select></div>
+          </div>
+          <div class="field"><label>عنوان الاستلام بالتفصيل *</label><textarea id="address" required placeholder="المنطقة والشارع وأقرب علامة"></textarea></div>
+          <div class="two">
+            <div class="field"><label>يوم الجولة *</label><input id="date" type="date" required></div>
+            <div class="field"><label>عدد الساعات *</label><select id="hours"><option value="1">ساعة واحدة</option><option value="2">ساعتان</option><option value="3">3 ساعات</option></select></div>
+          </div>
+
+          <!-- تفاصيل تحويل المبالغ -->
+          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl mb-3 text-xs space-y-1">
+            <p class="font-bold text-emerald-900">💳 بيانات تحويل المبلغ:</p>
+            <p class="text-emerald-800">فودافون كاش أو InstaPay على الرقم:</p>
+            <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-emerald-200">
+              <b class="text-sm font-mono text-emerald-900">01030145357</b>
+              <button type="button" onclick="navigator.clipboard.writeText('01030145357'); alert('تم نسخ الرقم!');" class="bg-emerald-700 text-white px-2 py-1 rounded text-[10px]">نسخ الرقم</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>إرفاق إيصال الدفع / سكرين شوت التحويل (اختياري)</label>
+            <input type="file" id="payReceipt" accept="image/*" class="text-xs">
+          </div>
+
+          <div class="total"><span>إجمالي السعر</span><strong id="totalPrice">500 جنيه</strong></div>
+          <button class="primary" type="submit">إرسال طلب الحجز</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- طلباتي -->
+    <section id="page-orders" class="hidden">
+      <div class="card">
+        <h3>طلباتي الحالية</h3>
+        <div id="ordersList"></div>
+      </div>
+    </section>
+
+    <!-- انضمام الكباتن والبيانات الرسمية -->
+    <section id="page-captain" class="hidden">
+      <div class="card space-y-3">
+        <h3>تسجيل بيانات كابتن جديد 🚶‍♂️</h3>
+        <p class="hint">سجل مستنداتك للانضمام إلى فريق عمل مشي الكلاب الاحترافي.</p>
+        <form id="captainRegForm" class="space-y-3 text-xs">
+          <div class="field"><label>الاسم بالكامل *</label><input id="capName" required placeholder="اسمك رباعي"></div>
+          <div class="field"><label>رقم الموبايل *</label><input id="capPhone" required placeholder="01xxxxxxxxx"></div>
+          
+          <div class="field"><label>صورة شخصية رسمية *</label><input type="file" id="capAvatar" accept="image/*" required></div>
+          <div class="two">
+            <div class="field"><label>صورة البطاقة (وجه) *</label><input type="file" id="capIdFront" accept="image/*" required></div>
+            <div class="field"><label>صورة البطاقة (ظهر) *</label><input type="file" id="capIdBack" accept="image/*" required></div>
+          </div>
+          <div class="field"><label>صحيفة الفيش والجنائي (حديثة) *</label><input type="file" id="capCriminal" accept="image/*" required></div>
+          <div class="field"><label>خبرتك مع الكلاب والسلالات التي تعاملت معها</label><textarea id="capExp" placeholder="اذكر عدد سنوات الخبرة والتعامل السابق..."></textarea></div>
+
+          <button type="submit" class="primary">إرسال طلب الانضمام ككابتن</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- لوحة الآدمن المحمية -->
+    <section id="page-admin" class="hidden">
+      <div id="adminLockBox" class="card space-y-3 text-center">
+        <h3 class="text-emerald-900"><i class="fa-solid fa-lock"></i> لوحة الإدارة المحمية</h3>
+        <p class="hint">أدخل رمز الدخول السري المخصص للوحة الإدارة:</p>
+        <input type="password" id="adminPassInput" placeholder="رمز الدخول" class="w-full p-2.5 border rounded-xl text-center font-mono">
+        <button onclick="unlockAdmin()" class="primary">تأكيد رمز الإدارة</button>
+      </div>
+
+      <div id="adminContent" class="hidden space-y-4">
+        <div class="card">
+          <h3 class="text-sm font-bold text-emerald-900 mb-2">طلبات الحجز الواردة والإيصالات:</h3>
+          <div id="adminOrdersList"></div>
+        </div>
+        <div class="card">
+          <h3 class="text-sm font-bold text-emerald-900 mb-2">طلبات ومستندات الكباتن الجدد:</h3>
+          <div id="adminCaptainsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ملف الحساب -->
+    <section id="page-profile" class="hidden">
+      <div class="card space-y-3">
+        <h3>نوع الحساب والتسجيل</h3>
+        <div class="field">
+          <label>اختر نوع الحساب:</label>
+          <select id="roleSelect" class="p-2.5 border rounded-xl w-full">
+            <option value="customer">عميل (أطلب مشي لكلبي)</option>
+            <option value="captain">كابتن (تقديم طلب انضمام)</option>
+            <option value="admin">إدارة (لوحة التحكم)</option>
+          </select>
+        </div>
+        <button class="primary" id="saveRoleBtn">تأكيد الاختيار</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- القائمة السفلية -->
+  <nav class="bottom">
+    <button class="active" data-page="home"><span>⌂</span>الرئيسية</button>
+    <button data-page="book"><span>＋</span>حجز</button>
+    <button data-page="orders"><span>▤</span>طلباتي</button>
+    <button data-page="profile"><span>☻</span>حسابي</button>
+  </nav>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+(function(){
+  const RATE=500, KEY='dw_bookings_v3', CAPKEY='dw_captains_v3', REVKEY='dw_reviews_v3';
+  const $=id=>document.getElementById(id);
+  let bookings=[], captains=[], reviews=[], toastTimer, generatedOTP = "", isPhoneVerified = false;
+
+  const defaultReviews = [
+    { name: "أحمد فتحي", comment: "خدمة ممتازة والكابتن وصل في موعده بالظبط والكلب كان سعيد جداً!", stars: 5, date: "2026/10/20", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=300&auto=format&fit=crop" },
+    { name: "سارة محمود", comment: "الكابتن محترف للغاية وصورة الجولة أثبتت لي الاهتمام والاحترافية.", stars: 5, date: "2026/10/19", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=300&auto=format&fit=crop" }
+  ];
+
+  try{ bookings = JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ bookings=[]; }
+  try{ captains = JSON.parse(localStorage.getItem(CAPKEY) || '[]'); }catch(e){ captains=[]; }
+  try{ reviews = JSON.parse(localStorage.getItem(REVKEY)) || defaultReviews; }catch(e){ reviews=defaultReviews; }
+
+  const today = new Date().toISOString().slice(0,10);
+  if($('date'))$('date').value = today;
+
+  function notify(msg){
+    const t=$('toast'); t.textContent=msg; t.classList.remove('hidden');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.add('hidden'), 3000);
+  }
+
+  function page(name){
+    document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+    const target=$('page-'+name); if(target) target.classList.remove('hidden');
+    document.querySelectorAll('.bottom button, .nav button').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
+    if(name==='orders') renderOrders();
+    if(name==='home') renderPublicReviews();
+    if(name==='admin') resetAdminLock();
+  }
+
+  document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>page(b.dataset.page)));
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>page(b.dataset.go)));
+
+  if($('hours')) {$('hours').addEventListener('change', ()=>{
+      $('totalPrice').textContent = ((Number($('hours').value)||1)*RATE) + ' جنيه';
+    });
+  }
+
+  // OTP Functionality
+  window.sendPhoneOTP = function() {
+    const phone = $('phone').value.trim();
+    if(!phone || phone.length < 10) return alert("يرجى إدخال رقم هاتف صحيح أولاً!");
+    
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    alert(`[رسالة أمان SMS]: كود التحقق الخاص برقمك (${phone}) هو: ${generatedOTP}`);
+    $('otpVerifyBox').classList.remove('hidden');
+  };
+
+  window.verifyPhoneOTP = function() {
+    const inputCode = $('otpInputCode').value.trim();
+    if(inputCode === generatedOTP && generatedOTP !== "") {
+      isPhoneVerified = true;
+      alert("✓ تم إثبات ملكية رقم الموبايل بنجاح!");
+      $('otpVerifyBox').classList.add('hidden');
+    } else {
+      alert("رمز التحقق غير صحيح، يرجى التأكد من الرقم المكتوب!");
+    }
+  };
+
+  // Booking Submit
+  $('bookingForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    if(!isPhoneVerified) {
+      return alert("يرجى الضغط على (إرسال كود SMS) وتأكيد رقم الموبايل قبل الحجز!");
+    }
+
+    const fileIn = $('payReceipt');
+    const processBooking = (receiptData = '') => {
+      const b = {
+        id: 'DW-' + Date.now().toString().slice(-6),
+        customer: $('customer').value.trim(),
+        phone: $('phone').value.trim(),
+        dog: $('dog').value.trim(),
+        size: $('size').value,
+        address: $('address').value.trim(),
+        date: $('date').value,
+        hours: $('hours').value,
+        total: (Number($('hours').value)*RATE) + ' جنيه',
+        receipt: receiptData,
+        status: 'قيد الانتظار'
+      };
+      bookings.unshift(b);
+      localStorage.setItem(KEY, JSON.stringify(bookings));
+      $('bookingForm').reset();
+      isPhoneVerified = false;
+      notify('تم تسجيل حجزك ونقل طلبك للإدارة!');
+      page('orders');
+    };
+
+    if(fileIn.files && fileIn.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => processBooking(e.target.result);
+      reader.readAsDataURL(fileIn.files[0]);
+    } else {
+      processBooking();
+    }
+  });
+
+  function renderOrders(){
+    const el=$('ordersList');
+    if(!bookings.length){ el.innerHTML='<div class="empty">لا توجد طلبات جارية.</div>'; return; }
+    el.innerHTML = bookings.map(b=>`
+      <div class="booking">
+        <div class="booking-top"><strong>جولة ${b.dog} (${b.hours} ساعة)</strong><span class="status">${b.status}</span></div>
+        <p>رقم الطلب: ${b.id} | السعر: <b>${b.total}</b></p>
+        <p>العنوان: ${b.address}</p>
+        ${b.receipt ? `<p class="text-emerald-700 font-bold">✓ تم إرفاق صورة التحويل</p>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // Captain Registration
+  $('captainRegForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const read = (file) => new Promise(r => { const rd = new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(file); });
+
+    Promise.all([
+      read($('capAvatar').files[0]),
+      read($('capIdFront').files[0]),
+      read($('capIdBack').files[0]),
+      read($('capCriminal').files[0])
+    ]).then(([av, idF, idB, crim]) => {
+      const cap = {
+        name: $('capName').value.trim(),
+        phone: $('capPhone').value.trim(),
+        exp: $('capExp').value.trim(),
+        avatar: av, idFront: idF, idBack: idB, criminal: crim
+      };
+      captains.unshift(cap);
+      localStorage.setItem(CAPKEY,
